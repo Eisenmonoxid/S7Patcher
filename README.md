@@ -2,11 +2,11 @@
 A simple application for the original release of the game "Settlers 7 - Paths to a kingdom".
 
 # Usage
-Simply drag&drop your game executable (Settlers7R.exe) onto the application. Look in your installation folder.
+Simply drag&drop your game executable (Settlers7R.exe) onto the application. Look in your installation folder. The application has only been tested on the Steam Gold Edition, it may or may not work on other versions.
 
 # Features
 - Enables the Development-Mode (Skippable intros).
-- Unlocks all the DLCs that became unavailable after the servers got shut down. This includes the DLC maps, the DLC campaign (which can also be played in skirmish now), the "Enormous Advantage" in the ingame map editor, new prestige decoration, 3 new victory points, and (possibly) more.
+- Unlocks all the DLC that became unavailable after the servers got shut down. This includes the DLC maps, the DLC campaign (which can also be played in skirmish now), the "Enormous Advantage" in the ingame map editor, new prestige decoration, 3 new victory points, and (possibly) more.
 
 # Tech
 The application modifies offsets in the game executable in the following way:
