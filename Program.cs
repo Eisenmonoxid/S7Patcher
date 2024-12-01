@@ -19,41 +19,38 @@ namespace S7Patcher
                 Console.ReadKey();
                 return;
             }
-            else
+
+            string Filepath = args[0];
+            if (!File.Exists(Filepath))
             {
-                string Filepath = args[0];
-                if (!File.Exists(Filepath))
-                {
-                    Console.WriteLine("S7Patcher: ERROR - No valid file passed as argument! Aborting ...");
-                    Console.ReadKey();
-                    return;
-                }
-
-                if (!CreateBackup(Filepath))
-                {
-                    Console.WriteLine("S7Patcher: ERROR - Could not create backup of file! Aborting ...");
-                    Console.ReadKey();
-                    return;
-                }
-
-                FileStream Stream = OpenFileStream(Filepath);
-                if (Stream == null)
-                {
-                    Console.WriteLine("S7Patcher: ERROR - Could not open FileStream! Aborting ...");
-                    Console.ReadKey();
-                    return;
-                }
-                else
-                {
-                    PatchFile(ref Stream);
-                    Stream.Close();
-                    Stream.Dispose();
-                }
+                Console.WriteLine("S7Patcher: ERROR - No valid file passed as argument! Aborting ...");
+                Console.ReadKey();
+                return;
             }
 
+            if (!CreateBackup(Filepath))
+            {
+                Console.WriteLine("S7Patcher: ERROR - Could not create backup of file! Aborting ...");
+                Console.ReadKey();
+                return;
+            }
+
+            FileStream Stream = OpenFileStream(Filepath);
+            if (Stream == null)
+            {
+                Console.WriteLine("S7Patcher: ERROR - Could not open FileStream! Aborting ...");
+                Console.ReadKey();
+                return;
+            }
+
+            PatchFile(ref Stream);
+            Stream.Close();
+            Stream.Dispose();
+  
             Console.WriteLine("S7Patcher: Finished successfully!");
             Console.ReadKey();
-            Environment.Exit(0);
+
+            return; // Exit
         }
         public static void PatchFile(ref FileStream Stream)
         {
