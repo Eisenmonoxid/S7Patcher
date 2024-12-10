@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace S7Patcher
 {
@@ -8,14 +9,14 @@ namespace S7Patcher
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Blue;
-            Console.Title = "S7Patcher - Eisenmonoxid";
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Title = "S7Patcher - \"https://github.com/Eisenmonoxid/S7Patcher\"";
             Console.TreatControlCAsInput = true;
             Console.Clear();
 
             if (args.Length == 0)
             {
-                Console.WriteLine("S7Patcher: ERROR - No valid file passed as argument! Aborting ...");
+                Console.WriteLine("S7Patcher: ERROR - Nothing passed as argument! Aborting ...");
                 Console.ReadKey();
                 return;
             }
@@ -48,30 +49,40 @@ namespace S7Patcher
             Stream.Dispose();
   
             Console.WriteLine("S7Patcher: Finished successfully!");
+            Console.WriteLine("S7Patcher: If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thank you in advance!");
             Console.ReadKey();
 
             return; // Exit
         }
         public static void PatchFile(ref FileStream Stream)
         {
-            WriteToFile(ref Stream, 0xD40E,   new byte[] {0x2D});
+            WriteToFile(ref Stream, 0x00D40E, new byte[] {0x2D});
             WriteToFile(ref Stream, 0x1A978E, new byte[] {0xEB});
             WriteToFile(ref Stream, 0x1A977C, new byte[] {0x90, 0x90});
             WriteToFile(ref Stream, 0x64477C, new byte[] {0xB0, 0x00});
             WriteToFile(ref Stream, 0x21929C, new byte[] {0xB0, 0x00});
             WriteToFile(ref Stream, 0x219224, new byte[] {0xB0, 0x00});
             WriteToFile(ref Stream, 0x195C34, new byte[] {0xEB, 0x15});
+            WriteToFile(ref Stream, 0x69000F, new byte[] {0x94});
+            WriteToFile(ref Stream, 0x58BC2E, new byte[] {0x01});
         }
-        public static bool CreateBackup(string Path)
+        public static bool CreateBackup(string Filepath)
         {
-            try
+            string FileName = Path.GetFileNameWithoutExtension(Filepath);
+            string DirectoryPath = Path.GetDirectoryName(Filepath);
+            string FinalPath = Path.Combine(DirectoryPath, FileName + "_BACKUP.exe");
+
+            if (File.Exists(FinalPath) == false)
             {
-                File.Copy(Path, Path + "_BACKUP", false);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
+                try
+                {
+                    File.Copy(Filepath, FinalPath, false);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR: " + ex.ToString());
+                    return false;
+                }
             }
 
             return true;
@@ -85,7 +96,7 @@ namespace S7Patcher
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("ERROR: " + ex.ToString());
             }
         }
         public static FileStream OpenFileStream(string Path)
@@ -97,7 +108,7 @@ namespace S7Patcher
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("ERROR: " + ex.ToString());
                 return null;
             }
             return Stream;
