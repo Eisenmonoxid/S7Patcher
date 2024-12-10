@@ -3,7 +3,9 @@ A simple application for the original release of the game "Settlers 7 - Paths to
 
 # Usage
 Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application. Look in your installation folder. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
-Find the Settlers7R.exe here: "<Steam>\Settlers 7 Gold\Data\Base\_Dbg\Bin\Release"
+
+*Find the Settlers7R.exe here:* 
+> \\Steam\Settlers 7 Gold\Data\Base\\_Dbg\Bin\Release
 
 # Features
 - Enables the Development-Mode (Skippable intros).
