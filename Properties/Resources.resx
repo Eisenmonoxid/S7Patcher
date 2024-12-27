@@ -120,6 +120,9 @@
   <data name="Branch" xml:space="preserve">
     <value>    &lt;ChoosenBranch&gt;28&lt;/ChoosenBranch&gt;</value>
   </data>
+  <data name="Cash" xml:space="preserve">
+    <value>    &lt;Cash&gt;99999&lt;/Cash&gt;</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>    &lt;Titles&gt;
      &lt;Title&gt;
