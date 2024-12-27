@@ -61,10 +61,16 @@ namespace S7Patcher.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to    &lt;TitleSystem&gt;
-        ///    &lt;BlockVersion name=&quot;TitleSystem&quot; version=&quot;1&quot;/&gt;
-        ///    &lt;ChoosenBranch&gt;28&lt;/ChoosenBranch&gt;
-        ///    &lt;Titles&gt;
+        ///   Looks up a localized string similar to     &lt;ChoosenBranch&gt;28&lt;/ChoosenBranch&gt;.
+        /// </summary>
+        internal static string Branch {
+            get {
+                return ResourceManager.GetString("Branch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     &lt;Titles&gt;
         ///     &lt;Title&gt;
         ///      &lt;BlockVersion name=&quot;Title&quot; version=&quot;1&quot;/&gt;
         ///      &lt;TitleId&gt;28&lt;/TitleId&gt;
@@ -75,8 +81,7 @@ namespace S7Patcher.Properties {
         ///       &lt;NextRankAt&gt;2000000000.&lt;/NextRankAt&gt;
         ///      &lt;/TitleProgression&gt;
         ///     &lt;/Title&gt;
-        ///    &lt;/Titles&gt;
-        ///   &lt;/TitleSystem&gt;.
+        ///    &lt;/Titles&gt;.
         /// </summary>
         internal static string Title {
             get {

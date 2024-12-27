@@ -24,7 +24,7 @@ namespace S7Patcher.Source
             bool Patch = true;
             for (ushort Index = 0; Index < Lines.Length; Index++)
             {
-                if (Lines[Index].Contains("<TitleSystem>"))
+                if (Lines[Index].Contains("<Titles>") && Lines[Index + 1].Contains("</TitleSystem>"))
                 {
                     Indizes.Add(Index);
                 }
@@ -39,6 +39,7 @@ namespace S7Patcher.Source
             {
                 foreach (ushort Index in Indizes)
                 {
+                    Lines[Index - 1] = Resources.Branch;
                     Lines[Index] = Resources.Title;
                 }
 
