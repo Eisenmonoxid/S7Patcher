@@ -1,6 +1,4 @@
-﻿using S7Patcher.Properties;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 
 namespace S7Patcher.Source
@@ -17,41 +15,6 @@ namespace S7Patcher.Source
             }
         }
 
-        public void WriteToXMLFile(string Filepath)
-        {
-            string[] Lines = File.ReadAllLines(Filepath, System.Text.Encoding.UTF8);
-            List<ushort> Indizes = new List<ushort>();
-            bool Patch = true;
-            ushort Cash = 0;
-            for (ushort Index = 0; Index < Lines.Length; Index++)
-            {
-                if (Lines[Index].Contains("<Titles>") && Lines[Index + 1].Contains("</TitleSystem>"))
-                {
-                    Indizes.Add(Index);
-                }
-                if (Lines[Index].Contains("<Cash>"))
-                {
-                    Cash = Index;
-                }
-                if (Lines[Index].Contains("<CurrentTitleValue>"))
-                {
-                    Patch = false;
-                    break;
-                }
-            }
-
-            if (Patch == true)
-            {
-                foreach (ushort Index in Indizes)
-                {
-                    Lines[Index - 1] = Resources.Branch;
-                    Lines[Index] = Resources.Title;
-                    Lines[Cash] = Resources.Cash;
-                }
-
-                File.WriteAllLines(Filepath, Lines);
-            }
-        }
         public bool CreateBackup(string Filepath)
         {
             string FileName = Path.GetFileNameWithoutExtension(Filepath);

@@ -1,4 +1,5 @@
-﻿using S7Patcher.Source;
+﻿using S7Patcher.Properties;
+using S7Patcher.Source;
 using System;
 using System.IO;
 
@@ -27,7 +28,7 @@ namespace S7Patcher
             Stream.Dispose();
 
             // Patch the "Profiles.xml" file
-            ReplaceTitleDataInProfileFile();
+            ReplaceDataInProfileFile();
 
             Console.WriteLine("S7Patcher: Finished successfully!");
             Console.WriteLine("S7Patcher: If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thank you in advance!");
@@ -35,7 +36,7 @@ namespace S7Patcher
 
             return; // Exit
         }
-        public static void ReplaceTitleDataInProfileFile()
+        public static void ReplaceDataInProfileFile()
         {
             string SettlersPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7");
             string ProfilePath = Path.Combine(SettlersPath, "Profiles.xml");
@@ -47,11 +48,11 @@ namespace S7Patcher
 
             try
             {
-                Helpers.Instance.WriteToXMLFile(ProfilePath);
+                UpdateProfileXML(ProfilePath);
             }
             catch (Exception ex)
             { 
-                Console.WriteLine("ReplaceTitleDataInProfileFile - ERROR: " + ex.ToString());
+                Console.WriteLine("ReplaceDataInProfileFile - ERROR: " + ex.ToString());
             }
         }
         public static void PatchFile(ref FileStream Stream)
@@ -65,6 +66,29 @@ namespace S7Patcher
             Helpers.Instance.WriteToFile(ref Stream, 0x195C34, new byte[] {0xEB, 0x15});
             Helpers.Instance.WriteToFile(ref Stream, 0x69000F, new byte[] {0x94});
             Helpers.Instance.WriteToFile(ref Stream, 0x58BC2E, new byte[] {0x01});
+        }
+        public static void UpdateProfileXML(string Filepath)
+        {
+            string[] Lines = File.ReadAllLines(Filepath, System.Text.Encoding.UTF8);
+            ushort[] Indizes = {0, 0};
+
+            for (ushort Index = 0; Index < Lines.Length; Index++)
+            {
+                if (Lines[Index].Contains("<Titles>") && Lines[Index + 1].Contains("</TitleSystem>"))
+                {
+                    Indizes[0] = Index;
+                }
+                if (Lines[Index].Contains("<LastSynchTime>"))
+                {
+                    Indizes[1] = Index;
+                }
+            }
+
+            Lines[Indizes[0] - 1] = Resources.Branch;
+            Lines[Indizes[0]] = Resources.Title;
+            Lines[Indizes[1] + 2] = Resources.Year;
+
+            File.WriteAllLines(Filepath, Lines);
         }
         public static FileStream HandleInput(string[] args)
         {

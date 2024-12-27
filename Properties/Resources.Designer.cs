@@ -70,15 +70,6 @@ namespace S7Patcher.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     &lt;Cash&gt;99999&lt;/Cash&gt;.
-        /// </summary>
-        internal static string Cash {
-            get {
-                return ResourceManager.GetString("Cash", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to     &lt;Titles&gt;
         ///     &lt;Title&gt;
         ///      &lt;BlockVersion name=&quot;Title&quot; version=&quot;1&quot;/&gt;
@@ -95,6 +86,15 @@ namespace S7Patcher.Properties {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     &lt;Year&gt;2020&lt;/Year&gt;.
+        /// </summary>
+        internal static string Year {
+            get {
+                return ResourceManager.GetString("Year", resourceCulture);
             }
         }
     }
