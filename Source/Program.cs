@@ -67,6 +67,7 @@ namespace S7Patcher
             Helpers.Instance.WriteToFile(ref Stream, 0x69000F, new byte[] {0x94});
             Helpers.Instance.WriteToFile(ref Stream, 0x58BC2E, new byte[] {0x01});
             Helpers.Instance.WriteToFile(ref Stream, 0x696D83, new byte[] {0x90, 0x90, 0x90, 0x90, 0x90});
+            Helpers.Instance.WriteToFile(ref Stream, 0x696DC8, new byte[] {0xE9, 0x0B, 0x03, 0x00, 0x00, 0x90});
         }
         public static void UpdateProfileXML(string Filepath)
         {
