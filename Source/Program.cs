@@ -84,11 +84,14 @@ namespace S7Patcher
                 }
             }
 
-            Lines[Indizes[0] - 1] = Resources.Branch;
-            Lines[Indizes[0]] = Resources.Title;
-            Lines[Indizes[1] + 2] = Resources.Year;
+            if (Indizes[0] != 0 && Indizes[1] != 0)
+            {
+                Lines[Indizes[0] - 1] = Resources.Branch;
+                Lines[Indizes[0]] = Resources.Title;
+                Lines[Indizes[1] + 2] = Resources.Year;
 
-            File.WriteAllLines(Filepath, Lines);
+                File.WriteAllLines(Filepath, Lines);
+            }
         }
         public static FileStream HandleInput(string[] args)
         {

@@ -90,7 +90,7 @@ namespace S7Patcher.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     &lt;Year&gt;2020&lt;/Year&gt;.
+        ///   Looks up a localized string similar to     &lt;Year&gt;2024&lt;/Year&gt;.
         /// </summary>
         internal static string Year {
             get {
