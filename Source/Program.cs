@@ -57,7 +57,8 @@ namespace S7Patcher
         }
         public static void PatchFile(ref FileStream Stream)
         {
-            Helpers.Instance.WriteToFile(ref Stream, 0x00D40E, new byte[] {0x2D});
+            Helpers.Instance.WriteToFile(ref Stream, 0x00D40D, new byte[] {0xE8, 0xBC, 0x99, 0x68, 0x00, 0x90});
+            Helpers.Instance.WriteToFile(ref Stream, 0x696DCE, new byte[] {0x55, 0x89, 0xE5, 0xC6, 0x05, 0x79, 0x5B, 0x0E, 0x01, 0x01, 0x89, 0xEC, 0x5D, 0xC3});
             Helpers.Instance.WriteToFile(ref Stream, 0x1A978E, new byte[] {0xEB});
             Helpers.Instance.WriteToFile(ref Stream, 0x1A977C, new byte[] {0x90, 0x90});
             Helpers.Instance.WriteToFile(ref Stream, 0x64477C, new byte[] {0xB0, 0x00});
