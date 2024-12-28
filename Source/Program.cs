@@ -30,7 +30,7 @@ namespace S7Patcher
             // Patch the "Profiles.xml" file
             ReplaceDataInProfileFile();
 
-            Console.WriteLine("S7Patcher: Finished successfully!");
+            Console.WriteLine("S7Patcher: Finished!");
             Console.WriteLine("S7Patcher: If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thank you in advance!");
             Console.ReadKey();
 
