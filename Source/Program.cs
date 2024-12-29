@@ -31,7 +31,7 @@ namespace S7Patcher
             ReplaceDataInProfileFile();
 
             Console.WriteLine("S7Patcher: Finished!");
-            Console.WriteLine("S7Patcher: If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thank you in advance!");
+            Console.WriteLine("S7Patcher: If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thanks in advance!");
             Console.ReadKey();
 
             return; // Exit
@@ -45,15 +45,8 @@ namespace S7Patcher
             {
                 return;
             }
-
-            try
-            {
-                UpdateProfileXML(ProfilePath);
-            }
-            catch (Exception ex)
-            { 
-                Console.WriteLine("ReplaceDataInProfileFile - ERROR: " + ex.ToString());
-            }
+            
+            UpdateProfileXML(ProfilePath);
         }
         public static void PatchFile(ref FileStream Stream)
         {
@@ -72,9 +65,18 @@ namespace S7Patcher
         }
         public static void UpdateProfileXML(string Filepath)
         {
-            string[] Lines = File.ReadAllLines(Filepath, System.Text.Encoding.UTF8);
+            string[] Lines;
+            try
+            {
+                Lines = File.ReadAllLines(Filepath, System.Text.Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("UpdateProfileXML - ERROR:" + ex.ToString());
+                return;
+            }
+            
             ushort[] Indizes = {0, 0};
-
             for (ushort Index = 0; Index < Lines.Length; Index++)
             {
                 if (Lines[Index].Contains("<Titles>") && Lines[Index + 1].Contains("</TitleSystem>"))
@@ -93,7 +95,14 @@ namespace S7Patcher
                 Lines[Indizes[0]] = Resources.Title;
                 Lines[Indizes[1] + 2] = Resources.Year;
 
-                File.WriteAllLines(Filepath, Lines);
+                try
+                {
+                    File.WriteAllLines(Filepath, Lines);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("UpdateProfileXML - ERROR:" + ex.ToString());
+                }
             }
         }
         public static FileStream HandleInput(string[] args)

@@ -10,9 +10,7 @@ Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher applic
 ```
 
 # Features
-- Enables the Development-Mode (skippable intros).
+- Enables the Development-Mode (f.e. skippable intros).
 - Unlocks all the DLC and UPlay Rewards that became unavailable when the servers got shut down. This includes the DLC maps, the DLC campaign (which can also be played in skirmish now), the "Enormous Advantage" in the ingame map editor, new prestige decoration, 3 new victory points, and (possibly) more.
 - Enables all local features (like the castle forge and the profile system) that required network access.
 - Fixes a few crashes that happened in offline-mode when local features were present.
-
-#### Should errors occur, please notify me so i can fix them. ;)
