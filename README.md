@@ -1,6 +1,8 @@
 # S7Patcher
 A simple application for the original release of the game "Settlers 7 - Paths to a Kingdom".
 
+**- Should you have any questions, errors or feature requests, find me at my [Discord](https://discord.gg/7SGkQtAAET).**
+
 # Usage
 Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application. Look in your installation folder. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
 
