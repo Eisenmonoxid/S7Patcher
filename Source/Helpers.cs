@@ -5,7 +5,7 @@ namespace S7Patcher.Source
 {
     public sealed class Helpers
     {
-        private static readonly Helpers _instance = new Helpers();
+        private static readonly Helpers _instance = new();
         private Helpers() {}
         public static Helpers Instance
         {
@@ -18,8 +18,7 @@ namespace S7Patcher.Source
         public bool CreateBackup(string Filepath)
         {
             string FileName = Path.GetFileNameWithoutExtension(Filepath);
-            string DirectoryPath = Path.GetDirectoryName(Filepath);
-            string FinalPath = Path.Combine(DirectoryPath, FileName + "_BACKUP.exe");
+            string FinalPath = Path.Combine(Path.GetDirectoryName(Filepath), FileName + "_BACKUP.exe");
 
             if (File.Exists(FinalPath) == false)
             {
@@ -29,14 +28,14 @@ namespace S7Patcher.Source
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("CreateBackup - ERROR: " + ex.ToString());
+                    Console.WriteLine(ex.ToString());
                     return false;
                 }
             }
 
             return true;
         }
-        public void WriteToFile(ref FileStream Stream, long Position, byte[] Bytes)
+        public void WriteToFile(FileStream Stream, long Position, byte[] Bytes)
         {
             Stream.Position = Position;
             try
@@ -45,7 +44,7 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine("WriteToFile - ERROR: " + ex.ToString());
+                Console.WriteLine(ex.ToString());
             }
         }
         public FileStream OpenFileStream(string Path)
@@ -57,7 +56,7 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine("OpenFileStream - ERROR: " + ex.ToString());
+                Console.WriteLine(ex.ToString());
                 return null;
             }
 
