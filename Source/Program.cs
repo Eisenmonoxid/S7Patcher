@@ -1,7 +1,6 @@
 ﻿using S7Patcher.Properties;
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace S7Patcher.Source
@@ -35,25 +34,13 @@ namespace S7Patcher.Source
         {
             // Patch the executable "Settlers7R.exe"
             PatchFile(Stream);
-            //AddModloaderToGame(Stream); -> Work in progress
+            //AddModloaderToGame(Stream); -> Work In Progress
 
             Stream.Close();
             Stream.Dispose();
 
             // Patch the "Profiles.xml" file
             ReplaceDataInProfileFile();
-        }
-        public static void ReplaceDataInProfileFile()
-        {
-            string SettlersPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7");
-            string ProfilePath = Path.Combine(SettlersPath, "Profiles.xml");
-
-            if (File.Exists(ProfilePath) == false)
-            {
-                return;
-            }
-
-            UpdateProfileXML(ProfilePath);
         }
         public static void PatchFile(FileStream Stream)
         {
@@ -69,6 +56,17 @@ namespace S7Patcher.Source
             Helpers.Instance.WriteToFile(Stream, 0x58BC2E, [0x01]);
             Helpers.Instance.WriteToFile(Stream, 0x696D83, [0x90, 0x90, 0x90, 0x90, 0x90]);
             Helpers.Instance.WriteToFile(Stream, 0x696DC8, [0xE9, 0x0B, 0x03, 0x00, 0x00, 0x90]);
+        }
+
+        public static void ReplaceDataInProfileFile()
+        {
+            string ProfilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7", "Profiles.xml");
+            if (File.Exists(ProfilePath) == false)
+            {
+                return;
+            }
+
+            UpdateProfileXML(ProfilePath);
         }
         public static void UpdateProfileXML(string Filepath)
         {
@@ -90,7 +88,7 @@ namespace S7Patcher.Source
                 {
                     Indizes[0] = Index;
                 }
-                if (Lines[Index].Contains("<LastSynchTime>"))
+                else if (Lines[Index].Contains("<LastSynchTime>"))
                 {
                     Indizes[1] = Index;
                 }
@@ -112,6 +110,7 @@ namespace S7Patcher.Source
                 }
             }
         }
+
         public static FileStream GetFileStream(string[] args)
         {
             FileStream Stream;
@@ -119,7 +118,7 @@ namespace S7Patcher.Source
 
             if (args.Length == 0)
             {
-                Console.WriteLine("ERROR - Nothing passed as argument! Please input the filepath that you want to patch:");
+                Console.WriteLine("Please input the filepath that you want to patch:\r\n");
                 Filepath = Console.ReadLine();
             }
             else
@@ -127,6 +126,7 @@ namespace S7Patcher.Source
                 Filepath = args[0];
             }
 
+            Console.WriteLine("Going to patch file: " + Filepath);
             if (File.Exists(Filepath) == false)
             {
                 Console.WriteLine("ERROR - Passed file is not valid! Aborting ...");
@@ -154,7 +154,7 @@ namespace S7Patcher.Source
             byte[] Bytes = [0x55, 0x8B, 0xEC, 0x81, 0xEC, 0x00, 0x03, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x00, 0x68, 0x05, 0x00, 0x00, 0x00, 0x8D, 0x85, 0x80, 0xFD,
                 0xFF, 0xFF, 0x50, 0x68, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x15, 0x30, 0xF8, 0xEB, 0x00, 0x8D, 0x95, 0x80, 0xFD, 0xFF, 0xFF, 0x52, 0x31, 0xC0, 0x89, 0x45, 0xFC, 0x89,
                 0x45, 0xF8, 0x89, 0x45, 0xF4, 0x89, 0x45, 0xF0, 0x8D, 0x45, 0xF0, 0xE8, 0xD0, 0xE5, 0x97, 0xFF, 0x68, 0x70, 0xEC, 0xF2, 0x00, 0x8D, 0x85, 0xF0, 0xFF, 0xFF, 0xFF,
-                0xE8, 0xE0, 0xE7, 0x97, 0xFF, 0xE8, 0x5B, 0xF2, 0xA9, 0xFF, 0x83, 0xC0, 0x5C, 0x68, 0x04, 0x00, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x00, 0x8D, 0x4D, 0xF0, 0x51,
+                0xE8, 0xE0, 0xE7, 0x97, 0xFF, 0xE8, 0x5B, 0xF2, 0xA9, 0xFF, 0x83, 0xC0, 0x5C, 0x68, 0x1C, 0x00, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x00, 0x8D, 0x4D, 0xF0, 0x51,
                 0x50, 0xE8, 0xD4, 0x3D, 0xF2, 0xFF, 0x31, 0xC0, 0x8B, 0x35, 0xF8, 0xF6, 0xEB, 0x00, 0x8B, 0x45, 0xF0, 0x50, 0xFF, 0xD6, 0x8B, 0x85, 0x80, 0xFD, 0xFF, 0xFF, 0x50,
                 0xFF, 0xD6, 0x81, 0xC4, 0x00, 0x03, 0x00, 0x00, 0x89, 0xEC, 0x5D, 0xC3];
 

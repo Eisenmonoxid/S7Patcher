@@ -17,9 +17,7 @@ namespace S7Patcher.Source
 
         public bool CreateBackup(string Filepath)
         {
-            string FileName = Path.GetFileNameWithoutExtension(Filepath);
-            string FinalPath = Path.Combine(Path.GetDirectoryName(Filepath), FileName + "_BACKUP.exe");
-
+            string FinalPath = Path.Combine(Path.GetDirectoryName(Filepath), Path.GetFileNameWithoutExtension(Filepath) + "_BACKUP.exe");
             if (File.Exists(FinalPath) == false)
             {
                 try
