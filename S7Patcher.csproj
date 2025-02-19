@@ -29,6 +29,8 @@
     <FileVersion>1.4.0.0</FileVersion>
     <NuGetAudit>False</NuGetAudit>
     <Copyright>Eisenmonoxid</Copyright>
+    <PublishTrimmed>True</PublishTrimmed>
+    <PublishAot>True</PublishAot>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

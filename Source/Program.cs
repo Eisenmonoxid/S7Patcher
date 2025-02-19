@@ -22,7 +22,7 @@ namespace S7Patcher.Source
                 return; // Exit
             }
 
-            ExecutePatch(Stream);
+            ExecutePatch(Stream); // Main patching function
 
             Console.WriteLine("Finished!");
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thanks in advance!");
@@ -81,33 +81,26 @@ namespace S7Patcher.Source
                 return;
             }
 
-            ushort[] Indizes = [0, 0];
             for (ushort Index = 0; Index < Lines.Length; Index++)
             {
                 if (Lines[Index].Contains("<Titles>") && Lines[Index + 1].Contains("</TitleSystem>"))
                 {
-                    Indizes[0] = Index;
+                    Lines[Index - 1] = Resources.Branch;
+                    Lines[Index] = Resources.Title;
                 }
                 else if (Lines[Index].Contains("<LastSynchTime>"))
                 {
-                    Indizes[1] = Index;
+                    Lines[Index + 2] = Resources.Year;
                 }
             }
 
-            if (Indizes[0] != 0 && Indizes[1] != 0)
+            try
             {
-                Lines[Indizes[0] - 1] = Resources.Branch;
-                Lines[Indizes[0]] = Resources.Title;
-                Lines[Indizes[1] + 2] = Resources.Year;
-
-                try
-                {
-                    File.WriteAllLines(Filepath, Lines);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
+                File.WriteAllLines(Filepath, Lines);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
 
@@ -118,7 +111,7 @@ namespace S7Patcher.Source
 
             if (args.Length == 0)
             {
-                Console.WriteLine("Please input the filepath that you want to patch:\r\n");
+                Console.WriteLine("Please input the path to the executable that you want to patch:\r\n");
                 Filepath = Console.ReadLine();
             }
             else
@@ -129,7 +122,7 @@ namespace S7Patcher.Source
             Console.WriteLine("Going to patch file: " + Filepath);
             if (File.Exists(Filepath) == false)
             {
-                Console.WriteLine("ERROR - Passed file is not valid! Aborting ...");
+                Console.WriteLine("ERROR - Input file is not valid! Aborting ...");
                 return null;
             }
 
@@ -148,7 +141,8 @@ namespace S7Patcher.Source
 
             return Stream;
         }
-
+        /*
+         * This is work in progress ... (might never be finished)
         public static void AddModloaderToGame(FileStream Stream)
         {
             byte[] Bytes = [0x55, 0x8B, 0xEC, 0x81, 0xEC, 0x00, 0x03, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x00, 0x68, 0x05, 0x00, 0x00, 0x00, 0x8D, 0x85, 0x80, 0xFD,
@@ -164,5 +158,6 @@ namespace S7Patcher.Source
             Helpers.Instance.WriteToFile(Stream, 0x130552, [0xE8, 0x17, 0x69, 0x56, 0x00]);
             Helpers.Instance.WriteToFile(Stream, 0x696E6E, [0x55, 0x89, 0xE5, 0x66, 0x60, 0xE8, 0x56, 0xFF, 0xFF, 0xFF, 0x66, 0x61, 0x89, 0xEC, 0x5D, 0xE8, 0x5E, 0xBD, 0xA9, 0xFF, 0xC3]);
         }
+        */
     }
 }
