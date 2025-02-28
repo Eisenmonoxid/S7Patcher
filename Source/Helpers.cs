@@ -15,14 +15,14 @@ namespace S7Patcher.Source
             }
         }
 
-        public bool CreateBackup(string Filepath)
+        public bool CreateBackup(string FilePath)
         {
-            string FinalPath = Path.Combine(Path.GetDirectoryName(Filepath), Path.GetFileNameWithoutExtension(Filepath) + "_BACKUP.exe");
-            if (File.Exists(FinalPath) == false)
+            string FullPath = Path.Combine(Path.GetDirectoryName(FilePath), Path.GetFileNameWithoutExtension(FilePath) + "_BACKUP.exe");
+            if (File.Exists(FullPath) == false)
             {
                 try
                 {
-                    File.Copy(Filepath, FinalPath, false);
+                    File.Copy(FilePath, FullPath, false);
                 }
                 catch (Exception ex)
                 {

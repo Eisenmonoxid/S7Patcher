@@ -25,11 +25,12 @@ namespace S7Patcher.Source
             ExecutePatch(Stream); // Main patching function
 
             Console.WriteLine("Finished!");
-            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub. Thanks in advance!");
+            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord. Thanks in advance!");
             Console.ReadKey();
 
             return; // Exit
         }
+
         public static void ExecutePatch(FileStream Stream)
         {
             // Patch the executable "Settlers7R.exe"
@@ -42,6 +43,7 @@ namespace S7Patcher.Source
             // Patch the "Profiles.xml" file
             ReplaceDataInProfileFile();
         }
+
         public static void PatchFile(FileStream Stream)
         {
             Helpers.Instance.WriteToFile(Stream, 0x00D40D, [0xE8, 0xBC, 0x99, 0x68, 0x00, 0x90]);
@@ -63,11 +65,13 @@ namespace S7Patcher.Source
             string ProfilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7", "Profiles.xml");
             if (File.Exists(ProfilePath) == false)
             {
+                Console.WriteLine(ProfilePath + " does not exist! Skipping .xml file patch ...");
                 return;
             }
 
             UpdateProfileXML(ProfilePath);
         }
+
         public static void UpdateProfileXML(string Filepath)
         {
             string[] Lines;
@@ -141,6 +145,7 @@ namespace S7Patcher.Source
 
             return Stream;
         }
+
         /*
          * This is work in progress ... (might never be finished)
         public static void AddModloaderToGame(FileStream Stream)

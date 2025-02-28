@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows7.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>false</UseWindowsForms>
@@ -31,6 +31,7 @@
     <Copyright>Eisenmonoxid</Copyright>
     <PublishTrimmed>True</PublishTrimmed>
     <PublishAot>True</PublishAot>
+    <Authors>Eisenmonoxid</Authors>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
