@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>false</UseWindowsForms>
@@ -30,8 +30,10 @@
     <NuGetAudit>False</NuGetAudit>
     <Copyright>Eisenmonoxid</Copyright>
     <PublishTrimmed>True</PublishTrimmed>
-    <PublishAot>True</PublishAot>
+    <PublishAot>False</PublishAot>
     <Authors>Eisenmonoxid</Authors>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <Version>1.4</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

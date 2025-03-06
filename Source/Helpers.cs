@@ -33,6 +33,7 @@ namespace S7Patcher.Source
 
             return true;
         }
+
         public void WriteToFile(FileStream Stream, long Position, byte[] Bytes)
         {
             Stream.Position = Position;
@@ -45,6 +46,7 @@ namespace S7Patcher.Source
                 Console.WriteLine(ex.ToString());
             }
         }
+
         public FileStream OpenFileStream(string Path)
         {
             FileStream Stream;
