@@ -48,7 +48,7 @@ namespace S7Patcher.Source
 
             if (args.Length == 0)
             {
-                Console.WriteLine("Please input the path to the executable that you want to patch:\r\n");
+                Console.WriteLine("Please input the path to the executable that you want to patch:\n");
                 Filepath = Console.ReadLine();
             }
             else

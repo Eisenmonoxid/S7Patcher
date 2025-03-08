@@ -121,18 +121,16 @@
     <value>    &lt;ChoosenBranch&gt;28&lt;/ChoosenBranch&gt;</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>    &lt;Titles&gt;
-     &lt;Title&gt;
+    <value>     &lt;Title&gt;
       &lt;BlockVersion name="Title" version="1"/&gt;
-      &lt;TitleId&gt;28&lt;/TitleId&gt;
+      &lt;TitleId&gt;%x1&lt;/TitleId&gt;
       &lt;TitleProgression&gt;
        &lt;BlockVersion name="TitleProgression" version="1"/&gt;
-       &lt;CurrentRank&gt;0&lt;/CurrentRank&gt;
+       &lt;CurrentRank&gt;%x2&lt;/CurrentRank&gt;
        &lt;CurrentTitleValue&gt;0.&lt;/CurrentTitleValue&gt;
        &lt;NextRankAt&gt;2000000000.&lt;/NextRankAt&gt;
       &lt;/TitleProgression&gt;
-     &lt;/Title&gt;
-    &lt;/Titles&gt;</value>
+     &lt;/Title&gt;</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>    &lt;Year&gt;9999&lt;/Year&gt;</value>

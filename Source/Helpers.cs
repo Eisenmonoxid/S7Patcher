@@ -1,4 +1,7 @@
-﻿using System;
+﻿using S7Patcher.Properties;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace S7Patcher.Source

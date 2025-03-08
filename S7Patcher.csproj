@@ -30,7 +30,7 @@
     <NuGetAudit>False</NuGetAudit>
     <Copyright>Eisenmonoxid</Copyright>
     <PublishTrimmed>True</PublishTrimmed>
-    <PublishAot>False</PublishAot>
+    <PublishAot>True</PublishAot>
     <Authors>Eisenmonoxid</Authors>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <Version>1.4.0</Version>

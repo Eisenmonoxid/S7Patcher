@@ -1,5 +1,6 @@
 ﻿using S7Patcher.Properties;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -51,10 +52,10 @@ namespace S7Patcher.Source
 
         private void UpdateProfileXML(string Filepath)
         {
-            string[] Lines;
+            List<string> Lines;
             try
             {
-                Lines = File.ReadAllLines(Filepath, Encoding.UTF8);
+                Lines = [.. File.ReadAllLines(Filepath, Encoding.UTF8)];
             }
             catch (Exception ex)
             {
@@ -62,18 +63,23 @@ namespace S7Patcher.Source
                 return;
             }
 
-            for (ushort Index = 0; Index < Lines.Length; Index++)
+            int StartIndex = Lines.FindIndex(0, Element => Element.Contains("<TitleSystem>"));
+            int EndIndex = Lines.FindIndex(0, Element => Element.Contains("</TitleSystem>"));
+            int SynchIndex = Lines.FindIndex(0, Element => Element.Contains("<LastSynchTime>"));
+
+            if (StartIndex == -1 || EndIndex == -1 || SynchIndex == -1)
             {
-                if (Lines[Index].Contains("<Titles>") && Lines[Index + 1].Contains("</TitleSystem>"))
-                {
-                    Lines[Index - 1] = Resources.Branch;
-                    Lines[Index] = Resources.Title;
-                }
-                else if (Lines[Index].Contains("<LastSynchTime>"))
-                {
-                    Lines[Index + 2] = Resources.Year;
-                }
+                return;
             }
+
+            if ((EndIndex - StartIndex) != 4)
+            {
+                Lines.RemoveRange(StartIndex + 3, (EndIndex - StartIndex) - 4);
+            }
+
+            Lines[StartIndex + 2] = Resources.Branch;
+            Lines[StartIndex + 3] = PopulateTitleSystem(Resources.Title);
+            Lines[SynchIndex + 2] = Resources.Year;
 
             try
             {
@@ -83,6 +89,22 @@ namespace S7Patcher.Source
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+
+        private string PopulateTitleSystem(string Input)
+        {
+            List<string> TitleCollection = ["    <Titles>"];
+            string Title = Input.Replace("%x2", "10");
+
+            for (ushort TitleID = 0; TitleID < 4; TitleID++)
+            {
+                TitleCollection.Add(Title.Replace("%x1", TitleID.ToString()));
+            }
+
+            TitleCollection.Add(Input.Replace("%x1", "28").Replace("%x2", "0"));
+            TitleCollection.Add("    </Titles>");
+
+            return string.Join("\r\n", TitleCollection);
         }
     }
 }
