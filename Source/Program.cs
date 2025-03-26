@@ -59,7 +59,7 @@ namespace S7Patcher.Source
             Console.WriteLine("Going to patch file: " + Filepath);
             if (File.Exists(Filepath) == false)
             {
-                Console.WriteLine("ERROR - File does not exist! Aborting ...");
+                Console.WriteLine("ERROR - File does not exist!");
                 return null;
             }
 

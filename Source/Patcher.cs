@@ -36,6 +36,7 @@ namespace S7Patcher.Source
             Helpers.Instance.WriteToFile(GlobalStream, 0x58BC2E, [0x01]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x696D83, [0x90, 0x90, 0x90, 0x90, 0x90]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x696DC8, [0xE9, 0x0B, 0x03, 0x00, 0x00, 0x90]);
+            Helpers.Instance.WriteToFile(GlobalStream, 0x62F0A9, [0xE9, 0xF2, 0x00, 0x00, 0x00, 0x90]);
         }
 
         public void ReplaceDataInProfileFile()
@@ -43,8 +44,20 @@ namespace S7Patcher.Source
             string ProfilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7", "Profiles.xml");
             if (File.Exists(ProfilePath) == false)
             {
-                Console.WriteLine(ProfilePath + " does not exist! Skipping .xml file patch ...");
-                return;
+                do
+                {
+                    Console.WriteLine("\n" + ProfilePath + " not found!\nPlease input the path to the Profiles.xml file:\n(Input skip to skip .xml file patching)\n");
+                    ProfilePath = Console.ReadLine();
+                    if (ProfilePath == "skip")
+                    {
+                        Console.WriteLine("Skipping .xml file patching ...");
+                        return;
+                    }
+                    else if (File.Exists(ProfilePath))
+                    {
+                        break;
+                    }
+                } while (true);
             }
 
             UpdateProfileXML(ProfilePath);
