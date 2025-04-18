@@ -5,6 +5,7 @@ namespace S7Patcher.Source
 {
     internal class Program
     {
+        public const bool USE_DEBUG = false;
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -17,7 +18,7 @@ namespace S7Patcher.Source
             if (Stream == null)
             {
                 Console.ReadKey();
-                return; // Exit
+                return;
             }
 
             Patcher Patcher = new(Stream);
@@ -27,18 +28,18 @@ namespace S7Patcher.Source
             }
             else
             {
-                Patcher.PatchFile();
+                Patcher.PatchFile(USE_DEBUG);
                 Patcher.ReplaceDataInProfileFile();
 
-                Console.WriteLine("Finished!");
-                Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord. Thanks in advance!");
+                Console.WriteLine("\nFinished successfully!");
+                Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
+                Console.WriteLine("Press any key to exit ...");
             }
 
             Stream.Close();
             Stream.Dispose();
 
             Console.ReadKey();
-            return; // Exit
         }
 
         public static FileStream GetFileStream(string[] args)
@@ -46,22 +47,28 @@ namespace S7Patcher.Source
             FileStream Stream;
             string Filepath;
 
-            if (args.Length == 0)
+            do
             {
-                Console.WriteLine("Please input the path to the executable that you want to patch:\n");
-                Filepath = Console.ReadLine();
-            }
-            else
-            {
-                Filepath = args[0];
-            }
+                if (args.Length == 0)
+                {
+                    Console.WriteLine("Please input the path to the executable that you want to patch:\n");
+                    Filepath = Console.ReadLine();
+                }
+                else
+                {
+                    Filepath = args[0];
+                }
 
-            Console.WriteLine("Going to patch file: " + Filepath);
-            if (File.Exists(Filepath) == false)
-            {
-                Console.WriteLine("ERROR - File does not exist!");
-                return null;
-            }
+                Console.WriteLine("Going to patch file: " + Filepath);
+                if (File.Exists(Filepath) == false)
+                {
+                    Console.WriteLine("ERROR - File does not exist!");
+                }
+                else
+                {
+                    break;
+                }
+            } while (true);
 
             if (Helpers.Instance.CreateBackup(Filepath) == false)
             {
