@@ -5,7 +5,7 @@ A simple application for the original release of the game "Settlers 7 - Paths to
 
 ---
 ## Usage
-Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application. Look in your installation folder. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
+Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
 
 *Find the Settlers7R.exe here:* 
 ```
@@ -22,4 +22,5 @@ Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher applic
 ---
 ## Recommendation
 To gain better performance in the game, set the process priority to "High" and limit the game to your physical CPU cores (4 at max), since it does not work well with SMT/Hyperthreading.
+
 Utilizing [DXVK](https://github.com/doitsujin/dxvk/releases/latest) can also be beneficial for performance and enables you to tweak some settings in the [configuration file](https://github.com/doitsujin/dxvk/wiki/Configuration).
