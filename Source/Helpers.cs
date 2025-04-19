@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace S7Patcher.Source
 {
@@ -61,6 +64,17 @@ namespace S7Patcher.Source
             }
 
             return Stream;
+        }
+
+        public bool CompareFileHash(FileStream Stream, string Hash)
+        {
+            using MD5 MD = MD5.Create();
+            return Encoding.Default.GetBytes(Hash).SequenceEqual(MD.ComputeHash(Stream));
+        }
+
+        public string RedirectLauncherFilePath(string ExecPath)
+        {
+            return Path.Combine(Path.GetDirectoryName(ExecPath), "Data", "Base", "_Dbg", "Bin", "Release", "Settlers7R.exe");
         }
     }
 }

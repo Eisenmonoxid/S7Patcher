@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace S7Patcher.Source
@@ -11,7 +10,8 @@ namespace S7Patcher.Source
     {
         private readonly FileStream GlobalStream = Stream;
 
-        public bool IsExecutableValid()
+        /*
+        public bool IsExecutableValid() // Comparing Hashes is the better way
         {
             byte[] Identifier = [0x8B, 0x01];
             byte[] Result = new byte[Identifier.Length];
@@ -29,8 +29,9 @@ namespace S7Patcher.Source
 
             return Result.SequenceEqual(Identifier);
         }
+        */
 
-        public void PatchFile(bool EasyDebug)
+        public void PatchFile(bool Debug)
         {
             Helpers.Instance.WriteToFile(GlobalStream, 0x00D40D, [0xE8, 0xBC, 0x99, 0x68, 0x00, 0x90]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x696DCE, [0x55, 0x89, 0xE5, 0xC6, 0x05, 0x79, 0x5B, 0x0E, 0x01, 0x01, 0x89, 0xEC, 0x5D, 0xC3]);
@@ -46,7 +47,7 @@ namespace S7Patcher.Source
             Helpers.Instance.WriteToFile(GlobalStream, 0x696DC8, [0xE9, 0x0B, 0x03, 0x00, 0x00, 0x90]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x62F0A9, [0xE9, 0xF2, 0x00, 0x00, 0x00, 0x90]);
 
-            if (EasyDebug)
+            if (Debug)
             {
                 Helpers.Instance.WriteToFile(GlobalStream, 0x00D2D9, [0x90, 0x90]); // Always show message before startup happens
             }
@@ -61,6 +62,7 @@ namespace S7Patcher.Source
                 {
                     Console.WriteLine("\n" + ProfilePath + " not found!\nPlease input the path to the Profiles.xml file:\n(Input skip to skip .xml file patching)\n");
                     ProfilePath = Console.ReadLine();
+
                     if (ProfilePath == "skip")
                     {
                         Console.WriteLine("Skipping .xml file patching ...");

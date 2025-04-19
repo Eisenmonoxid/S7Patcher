@@ -5,7 +5,10 @@ namespace S7Patcher.Source
 {
     internal class Program
     {
-        public const bool USE_DEBUG = false;
+        private const bool USE_DEBUG        = false;
+        private const string LauncherHash   = "348783a3d9b93bb424b7054429cd4844";
+        private const string ExecHash       = "eae5ac50ab69961385acfb800236eabf";
+
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -21,25 +24,24 @@ namespace S7Patcher.Source
                 return;
             }
 
-            Patcher Patcher = new(Stream);
-            if (Patcher.IsExecutableValid() == false)
-            {
-                Console.WriteLine("ERROR - Executable was not valid! Aborting ...");
-            }
-            else
-            {
-                Patcher.PatchFile(USE_DEBUG);
-                Patcher.ReplaceDataInProfileFile();
+            HandlePatchingProcess(Stream, USE_DEBUG);
 
-                Console.WriteLine("\nFinished successfully!");
-                Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
-                Console.WriteLine("Press any key to exit ...");
-            }
+            Console.WriteLine("Press any key to exit ...");
+            Console.ReadKey();
+            return;
+        }
+
+        public static void HandlePatchingProcess(FileStream Stream, bool Debug)
+        {
+            Patcher Patcher = new(Stream);
+            Patcher.PatchFile(Debug);
+            Patcher.ReplaceDataInProfileFile();
+
+            Console.WriteLine("\nFinished successfully!");
+            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), report on GitHub or Discord.");
 
             Stream.Close();
             Stream.Dispose();
-
-            Console.ReadKey();
         }
 
         public static FileStream GetFileStream(string[] args)
@@ -47,28 +49,21 @@ namespace S7Patcher.Source
             FileStream Stream;
             string Filepath;
 
-            do
+            if (args.Length == 0)
             {
-                if (args.Length == 0)
-                {
-                    Console.WriteLine("Please input the path to the executable that you want to patch:\n");
-                    Filepath = Console.ReadLine();
-                }
-                else
-                {
-                    Filepath = args[0];
-                }
+                Console.WriteLine("Please input the path to the executable that you want to patch:\n");
+                Filepath = Console.ReadLine();
+            }
+            else
+            {
+                Filepath = args[0];
+            }
 
-                Console.WriteLine("Going to patch file: " + Filepath);
-                if (File.Exists(Filepath) == false)
-                {
-                    Console.WriteLine("ERROR - File does not exist!");
-                }
-                else
-                {
-                    break;
-                }
-            } while (true);
+            if (File.Exists(Filepath) == false)
+            {
+                Console.WriteLine("ERROR - File does not exist!");
+                return null;
+            }
 
             if (Helpers.Instance.CreateBackup(Filepath) == false)
             {
@@ -83,7 +78,27 @@ namespace S7Patcher.Source
                 return null;
             }
 
-            return Stream;
+            if (Helpers.Instance.CompareFileHash(Stream, ExecHash) == true)
+            {
+                Console.WriteLine("Going to patch file: " + Filepath);
+                return Stream;
+            }
+            else if (Helpers.Instance.CompareFileHash(Stream, LauncherHash) == true)
+            {
+                Console.WriteLine("Launcher found! Redirecting Filepath!");
+
+                Stream.Close();
+                Stream.Dispose();
+                return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
+            }
+            else
+            {
+                Console.WriteLine("ERROR - Executable was not valid! Aborting ...");
+
+                Stream.Close();
+                Stream.Dispose();
+                return null;
+            }
         }
     }
 }

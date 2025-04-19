@@ -33,7 +33,7 @@
     <PublishAot>True</PublishAot>
     <Authors>Eisenmonoxid</Authors>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
-    <Version>1.4.0</Version>
+    <Version>1.5.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
