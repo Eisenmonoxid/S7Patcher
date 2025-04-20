@@ -31,6 +31,8 @@ Utilizing [DXVK](https://github.com/doitsujin/dxvk/releases/latest) can also be 
 ## Dev Mode Options
 Using the following key combinations, you can enable/disable a few special features of the Development-Mode:
 - `CTRL + G`: Toggle the ingame UI.
-- `CTRL + SHIFT + Z`: Enable the free view camera mode. Control the camera using WASD or the arrow keys, the right mouse button and Q and E.
-- `CTRL + SHIFT + C`: Disable the free view camera mode, returns to the default camera.
-- `CTRL + SHIFT + T`: Hide the terrain.
+- `CTRL + C`: Switch between the free view camera mode and the default camera mode. Control the free view camera using WASD or the arrow keys, 
+the right mouse button and Q and E.
+- `CTRL + SHIFT + T`: Toggle terrain rendering.
+- `CTRL + SHIFT + W`: Toggle water and lava rendering.
+- `CTRL + SHIFT + C`: Toggle grass and bush rendering.
