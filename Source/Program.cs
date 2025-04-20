@@ -78,12 +78,13 @@ namespace S7Patcher.Source
                 return null;
             }
 
-            if (Helpers.Instance.CompareFileHash(Stream, ExecHash) == true)
+            string FileHash = Helpers.Instance.GetFileHash(Stream);
+            if (FileHash.Equals(ExecHash) == true)
             {
                 Console.WriteLine("Going to patch file: " + Filepath);
                 return Stream;
             }
-            else if (Helpers.Instance.CompareFileHash(Stream, LauncherHash) == true)
+            else if (FileHash.Equals(LauncherHash) == true)
             {
                 Console.WriteLine("Launcher found! Redirecting Filepath!");
 

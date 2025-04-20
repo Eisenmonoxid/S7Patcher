@@ -66,10 +66,10 @@ namespace S7Patcher.Source
             return Stream;
         }
 
-        public bool CompareFileHash(FileStream Stream, string Hash)
+        public string GetFileHash(FileStream Stream)
         {
             using MD5 MD = MD5.Create();
-            return Encoding.Default.GetBytes(Hash).SequenceEqual(MD.ComputeHash(Stream));
+            return Convert.ToHexString(MD.ComputeHash(Stream)).ToLower();
         }
 
         public string RedirectLauncherFilePath(string ExecPath)
