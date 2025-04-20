@@ -78,18 +78,18 @@ namespace S7Patcher.Source
                 return null;
             }
 
-            if (Helpers.Instance.IsExecutableValid(Stream) == true)
-            {
-                Console.WriteLine("Going to patch file: " + Filepath);
-                return Stream;
-            }
-            else if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()) == true)
+            if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()) == true)
             {
                 Console.WriteLine("Launcher found! Redirecting Filepath!");
 
                 Stream.Close();
                 Stream.Dispose();
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
+            }
+            else if (Helpers.Instance.IsExecutableValid(Stream) == true)
+            {
+                Console.WriteLine("Going to patch file: " + Filepath);
+                return Stream;
             }
             else
             {
