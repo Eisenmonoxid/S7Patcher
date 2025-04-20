@@ -5,9 +5,8 @@ namespace S7Patcher.Source
 {
     internal class Program
     {
-        private const bool USE_DEBUG        = false;
-        private const string LauncherHash   = "348783a3d9b93bb424b7054429cd4844";
-        private const string ExecHash       = "eae5ac50ab69961385acfb800236eabf";
+        private const bool USE_DEBUG = false;
+        private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
 
         static void Main(string[] args)
         {
@@ -35,10 +34,11 @@ namespace S7Patcher.Source
         {
             Patcher Patcher = new(Stream);
             Patcher.PatchFile(Debug);
-            Patcher.ReplaceDataInProfileFile();
+            Patcher.UpdateConfigurationFile("Profiles.xml");
+            Patcher.UpdateConfigurationFile("Options.ini");
 
-            Console.WriteLine("\nFinished successfully!");
-            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), report on GitHub or Discord.");
+            Console.WriteLine("\nFinished!");
+            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
 
             Stream.Close();
             Stream.Dispose();
@@ -78,13 +78,12 @@ namespace S7Patcher.Source
                 return null;
             }
 
-            string FileHash = Helpers.Instance.GetFileHash(Stream);
-            if (FileHash.Equals(ExecHash) == true)
+            if (Helpers.Instance.IsExecutableValid(Stream) == true)
             {
                 Console.WriteLine("Going to patch file: " + Filepath);
                 return Stream;
             }
-            else if (FileHash.Equals(LauncherHash) == true)
+            else if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()) == true)
             {
                 Console.WriteLine("Launcher found! Redirecting Filepath!");
 

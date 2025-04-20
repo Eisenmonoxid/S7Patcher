@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace S7Patcher.Source
@@ -9,27 +10,6 @@ namespace S7Patcher.Source
     internal class Patcher(FileStream Stream)
     {
         private readonly FileStream GlobalStream = Stream;
-
-        /*
-        public bool IsExecutableValid() // Comparing Hashes is the better way
-        {
-            byte[] Identifier = [0x8B, 0x01];
-            byte[] Result = new byte[Identifier.Length];
-
-            try
-            {
-                GlobalStream.Position = 0x00D24C;
-                GlobalStream.ReadExactly(Result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
-
-            return Result.SequenceEqual(Identifier);
-        }
-        */
 
         public void PatchFile(bool Debug)
         {
@@ -53,30 +33,42 @@ namespace S7Patcher.Source
             }
         }
 
-        public void ReplaceDataInProfileFile()
+        public void UpdateConfigurationFile(string Name)
         {
-            string ProfilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7", "Profiles.xml");
-            if (File.Exists(ProfilePath) == false)
+            string Filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Settlers7", Name);
+            if (File.Exists(Filepath) == false)
             {
                 do
                 {
-                    Console.WriteLine("\n" + ProfilePath + " not found!\nPlease input the path to the Profiles.xml file:\n(Input skip to skip .xml file patching)\n");
-                    ProfilePath = Console.ReadLine();
+                    Console.WriteLine("\n" + Filepath + " not found!\nPlease input the path to the " + Name + " file:\n(Input skip to skip file patching)\n");
+                    Filepath = Console.ReadLine();
 
-                    if (ProfilePath == "skip")
+                    if (Filepath == "skip")
                     {
-                        Console.WriteLine("Skipping .xml file patching ...");
+                        Console.WriteLine("Skipping file patching ...");
                         return;
                     }
-                    else if (File.Exists(ProfilePath))
+                    else if (File.Exists(Filepath))
                     {
                         break;
                     }
-                } while (true);
+                }
+                while (true);
             }
 
-            Console.WriteLine("Going to patch file: " + ProfilePath);
-            UpdateProfileXML(ProfilePath);
+            Console.WriteLine("Going to patch file: " + Filepath);
+            if (Name == "Profiles.xml")
+            {
+                UpdateProfileXML(Filepath);
+            }
+            else if (Name == "Options.ini")
+            {
+                UpdateEntriesInOptionsFile(Filepath);
+            }
+            else
+            {
+                return;
+            }
         }
 
         private void UpdateProfileXML(string Filepath)
@@ -134,6 +126,40 @@ namespace S7Patcher.Source
             TitleCollection.Add("    </Titles>");
 
             return string.Join("\r\n", TitleCollection);
+        }
+
+        private void UpdateEntriesInOptionsFile(string Filepath)
+        {
+            List<string> Lines;
+            try
+            {
+                Lines = [.. File.ReadAllLines(Filepath, Encoding.UTF8)];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return;
+            }
+
+            int SystemIndex = Lines.FindIndex(0, Element => Element.Contains("[System]"));
+            if (SystemIndex != -1)
+            {
+                Lines.RemoveRange(SystemIndex - 1, Lines.Count - (SystemIndex - 1));
+                Lines.Insert(SystemIndex - 1, Resources.Options);
+            }
+            else
+            {
+                Lines.Add(Resources.Options);
+            }
+
+            try
+            {
+                File.WriteAllLines(Filepath, Lines);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
     }
 }

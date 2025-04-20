@@ -97,5 +97,11 @@ namespace S7Patcher.Properties {
                 return ResourceManager.GetString("Year", resourceCulture);
             }
         }
+		
+		internal static string Options {
+            get {
+                return ResourceManager.GetString("Options", resourceCulture);
+            }
+        }
     }
 }

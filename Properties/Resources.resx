@@ -120,6 +120,30 @@
   <data name="Branch" xml:space="preserve">
     <value>    &lt;ChoosenBranch&gt;28&lt;/ChoosenBranch&gt;</value>
   </data>
+  <data name="Options" xml:space="preserve">
+    <value>
+[System]
+Border = 1
+Buildings = 1
+Characters = 1
+Cliffs = 1
+Decals = 1
+DevGrid = 1
+Doodads = 1
+Influence = 1
+MapBorder = 1
+Mountains = 1
+Overlay = 1
+Primitive = 1
+Sector = 1
+Terrain = 1
+TerrainBaseMap = 1
+TerrainGrid = 1
+Trees = 1
+Water = 1
+WaterReflection = 1
+</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>     &lt;Title&gt;
       &lt;BlockVersion name="Title" version="1"/&gt;

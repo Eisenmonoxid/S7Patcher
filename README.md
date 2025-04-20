@@ -5,11 +5,13 @@ A simple application for the original release of the game "Settlers 7 - Paths to
 
 ---
 ## Usage
-Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
+Before using the S7Patcher, make sure that the game has been launched successfully at least once.
+Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application **OR** start the application and input the path to the file
+manually. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
 
 *Find the Settlers7R.exe here:* 
 ```
-<Steam>\Settlers 7 Gold\Data\Base\_Dbg\Bin\Release\Settlers7R.exe
+<Settlers7>\Data\Base\_Dbg\Bin\Release\Settlers7R.exe
 ```
 
 ---
@@ -24,3 +26,11 @@ Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher applic
 To gain better performance in the game, set the process priority to "High" and limit the game to your physical CPU cores (4 at max), since it does not work well with SMT/Hyperthreading.
 
 Utilizing [DXVK](https://github.com/doitsujin/dxvk/releases/latest) can also be beneficial for performance and enables you to tweak some settings in the [configuration file](https://github.com/doitsujin/dxvk/wiki/Configuration).
+
+---
+## Dev Mode Options
+Using the following key combinations, you can enable/disable a few special features of the Development-Mode:
+- `CTRL + G`: Toggle the ingame UI.
+- `CTRL + SHIFT + Z`: Enable the free view camera mode. Control the camera using WASD or the arrow keys, the right mouse button and Q and E.
+- `CTRL + SHIFT + C`: Disable the free view camera mode, returns to the default camera.
+- `CTRL + SHIFT + T`: Hide the terrain.

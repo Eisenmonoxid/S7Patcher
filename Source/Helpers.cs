@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace S7Patcher.Source
 {
@@ -75,6 +74,25 @@ namespace S7Patcher.Source
         public string RedirectLauncherFilePath(string ExecPath)
         {
             return Path.Combine(Path.GetDirectoryName(ExecPath), "Data", "Base", "_Dbg", "Bin", "Release", "Settlers7R.exe");
+        }
+
+        public bool IsExecutableValid(FileStream Stream)
+        {
+            byte[] Identifier = [0x8B, 0x01];
+            byte[] Result = new byte[Identifier.Length];
+
+            try
+            {
+                Stream.Position = 0x00D24C;
+                Stream.ReadExactly(Result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+
+            return Result.SequenceEqual(Identifier);
         }
     }
 }
