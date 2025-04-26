@@ -53,7 +53,7 @@ namespace S7Patcher.Source
             {
                 do
                 {
-                    Console.WriteLine("\n" + Filepath + " not found!\nPlease input the path to the " + Name + " file:\n(Input skip to skip file patching)\n");
+                    Console.WriteLine("\n" + Filepath + " not found!\nPlease input the path to the " + Name + " file:\n(Input skip to skip file patching)");
                     Filepath = Console.ReadLine();
 
                     if (Filepath == "skip")
@@ -77,10 +77,6 @@ namespace S7Patcher.Source
             else if (Name == "Options.ini")
             {
                 UpdateEntriesInOptionsFile(Filepath);
-            }
-            else
-            {
-                return;
             }
         }
 
