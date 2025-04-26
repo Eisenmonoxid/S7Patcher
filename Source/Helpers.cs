@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace S7Patcher.Source
 {
@@ -76,23 +78,34 @@ namespace S7Patcher.Source
             return Path.Combine(Path.GetDirectoryName(ExecPath), "Data", "Base", "_Dbg", "Bin", "Release", "Settlers7R.exe");
         }
 
-        public bool IsExecutableValid(FileStream Stream)
+        public GameVariant GetExecutableVariant(FileStream Stream)
         {
             byte[] Identifier = [0x8B, 0x01];
             byte[] Result = new byte[Identifier.Length];
-
-            try
+            Dictionary<uint, GameVariant> Mapping = new()
             {
-                Stream.Position = 0x00D24C;
+                {0x00D24C, GameVariant.ORIGINAL},
+                {0xACC6C5, GameVariant.HE_STEAM},
+                // {0xACC6C5, GameVariant.HE_UBI} -> TODO
+            };
+
+            foreach (var Element in Mapping)
+            {
+                if (Stream.Length < Element.Key)
+                {
+                    continue;
+                }
+
+                Stream.Position = Element.Key;
                 Stream.ReadExactly(Result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
+
+                if (Result.SequenceEqual(Identifier))
+                {
+                    return Element.Value;
+                }
             }
 
-            return Result.SequenceEqual(Identifier);
+            return GameVariant.NONE;
         }
     }
 }

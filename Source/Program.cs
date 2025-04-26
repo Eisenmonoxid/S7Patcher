@@ -3,8 +3,17 @@ using System.IO;
 
 namespace S7Patcher.Source
 {
+    public enum GameVariant
+    {
+        NONE,
+        ORIGINAL,
+        HE_STEAM,
+        HE_UBI
+    }
+
     internal class Program
     {
+        public static GameVariant CurrentGameVariant = GameVariant.NONE;
         private const bool USE_DEBUG = false;
         private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
 
@@ -33,8 +42,16 @@ namespace S7Patcher.Source
         public static void HandlePatchingProcess(FileStream Stream, bool Debug)
         {
             Patcher Patcher = new(Stream);
-            Patcher.PatchFile(Debug);
-            Patcher.UpdateConfigurationFile("Profiles.xml");
+            if (CurrentGameVariant == GameVariant.HE_STEAM || CurrentGameVariant == GameVariant.HE_UBI)
+            {
+                Patcher.PatchHistoryEdition(CurrentGameVariant, Debug);
+            }
+            else
+            {
+                Patcher.PatchOriginalRelease(Debug);
+                Patcher.UpdateConfigurationFile("Profiles.xml");
+            }
+
             Patcher.UpdateConfigurationFile("Options.ini");
 
             Console.WriteLine("\nFinished!");
@@ -86,9 +103,11 @@ namespace S7Patcher.Source
                 Stream.Dispose();
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
             }
-            else if (Helpers.Instance.IsExecutableValid(Stream) == true)
+
+            CurrentGameVariant = Helpers.Instance.GetExecutableVariant(Stream);
+            if (CurrentGameVariant != GameVariant.NONE)
             {
-                Console.WriteLine("Going to patch file: " + Filepath);
+                Console.WriteLine("Found Game Variant " + CurrentGameVariant.ToString() + ". Going to patch file: " + Filepath);
                 return Stream;
             }
             else

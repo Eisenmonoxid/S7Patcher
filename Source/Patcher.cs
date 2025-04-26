@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace S7Patcher.Source
@@ -11,7 +10,7 @@ namespace S7Patcher.Source
     {
         private readonly FileStream GlobalStream = Stream;
 
-        public void PatchFile(bool Debug)
+        public void PatchOriginalRelease(bool Debug)
         {
             Helpers.Instance.WriteToFile(GlobalStream, 0x00D40D, [0xE8, 0xBC, 0x99, 0x68, 0x00, 0x90]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x696DCE, [0x55, 0x89, 0xE5, 0xC6, 0x05, 0x79, 0x5B, 0x0E, 0x01, 0x01, 0x89, 0xEC, 0x5D, 0xC3]);
@@ -31,6 +30,20 @@ namespace S7Patcher.Source
             {
                 Helpers.Instance.WriteToFile(GlobalStream, 0x00D2D9, [0x90, 0x90]); // Always show message before startup happens
             }
+        }
+
+        public void PatchHistoryEdition(GameVariant Variant, bool Debug)
+        {
+            if (Variant == GameVariant.HE_STEAM)
+            {
+                Helpers.Instance.WriteToFile(GlobalStream, 0x13CFEC, [0x94]);
+
+                if (Debug)
+                {
+                    Helpers.Instance.WriteToFile(GlobalStream, 0xAC5435, [0x90, 0x90]); // Always show message before startup happens
+                }
+            }
+            // TODO: Implement UBI
         }
 
         public void UpdateConfigurationFile(string Name)
