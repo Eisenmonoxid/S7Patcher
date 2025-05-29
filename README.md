@@ -5,9 +5,10 @@ A simple application for the game "The Settlers 7 - Paths to a Kingdom".
 
 ---
 ## Usage
-Before using the S7Patcher, make sure that the game has been launched successfully at least once.
-Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application **OR** start the application and input the path to the file
-manually. The S7Patcher works with the original release of the game and both History Editions.
+Before using the S7Patcher, make sure that the game has been launched successfully at least once.  
+Afterwards, simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application **OR** start the application and input the path to the file
+manually. The S7Patcher works with the original release of the game and both History Editions.  
+_(In case your History Edition is from Steam, the executable will have to be extracted with the tool "Steamless" first before using the S7Patcher!)_
 
 *Find the Settlers7R.exe here:* 
 ```
