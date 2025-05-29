@@ -43,7 +43,15 @@ namespace S7Patcher.Source
                     Helpers.Instance.WriteToFile(GlobalStream, 0xAC5435, [0x90, 0x90]); // Always show message before startup happens
                 }
             }
-            // TODO: Implement UBI
+            else if (Variant == GameVariant.HE_UBI)
+            {
+                Helpers.Instance.WriteToFile(GlobalStream, 0x13D9FC, [0x94]);
+
+                if (Debug)
+                {
+                    Helpers.Instance.WriteToFile(GlobalStream, 0xAC5D4A, [0x90, 0x90]); // Always show message before startup happens
+                }
+            }
         }
 
         public void UpdateConfigurationFile(string Name)

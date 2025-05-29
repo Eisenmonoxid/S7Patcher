@@ -86,7 +86,7 @@ namespace S7Patcher.Source
             {
                 {0x00D24C, GameVariant.ORIGINAL},
                 {0xACC6C5, GameVariant.HE_STEAM},
-                // {0xACC6C5, GameVariant.HE_UBI} -> TODO
+                {0xACCFD5, GameVariant.HE_UBI}
             };
 
             foreach (var Element in Mapping)

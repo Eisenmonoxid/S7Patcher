@@ -1,5 +1,5 @@
 # S7Patcher
-A simple application for the original release of the game "Settlers 7 - Paths to a Kingdom".
+A simple application for the game "The Settlers 7 - Paths to a Kingdom".
 
 **Should you have any questions, errors or feature requests: [Discord](https://discord.gg/7SGkQtAAET).**
 
@@ -7,7 +7,7 @@ A simple application for the original release of the game "Settlers 7 - Paths to
 ## Usage
 Before using the S7Patcher, make sure that the game has been launched successfully at least once.
 Simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application **OR** start the application and input the path to the file
-manually. The S7Patcher has only been tested on the Steam Gold Edition, it may or may not work on other versions.
+manually. The S7Patcher works with the original release of the game and both History Editions.
 
 *Find the Settlers7R.exe here:* 
 ```
@@ -16,7 +16,9 @@ manually. The S7Patcher has only been tested on the Steam Gold Edition, it may o
 
 ---
 ## Features
+### All Versions
 - Enables the Development-Mode (e.g. skippable intros).
+### Original Release (Gold Edition)
 - Unlocks all the DLC and UPlay Rewards that became unavailable when the servers got shut down. This includes the DLC maps, the DLC campaign (which can also be played in skirmish now), the "Enormous Advantage" in the ingame map editor, new prestige decoration, 3 new victory points, and (possibly) more.
 - Enables all local features (like the castle forge and the profile system) that required network access.
 - Fixes a few crashes that happened in offline-mode when local features were present.
@@ -36,3 +38,5 @@ the right mouse button and Q and E.
 - `CTRL + SHIFT + T`: Toggle terrain rendering.
 - `CTRL + SHIFT + W`: Toggle water and lava rendering.
 - `CTRL + SHIFT + C`: Toggle grass and bush rendering.
+
+It is also possible to play the campaign and scenario maps in skirmish mode (drop-down menu in the upper left corner).
