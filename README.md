@@ -1,7 +1,7 @@
 # S7Patcher
 A simple application for the game "The Settlers 7 - Paths to a Kingdom".
 <p align="center">
-	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/S7.jpg" width="30%" height="30%" alt="Header"/>
+	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/S7.jpg" width="60%" height="60%" alt="Header"/>
 </p>
 
 **Should you have any questions, errors or feature requests: [Discord](https://discord.gg/7SGkQtAAET).**
@@ -40,11 +40,8 @@ the right mouse button and Q and E.
 - `F10`: Toggle the AI menu.
 
 <p align="center">
-	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/F11.jpg" width="30%" height="30%" alt="F11"/>
-</p>
-
-<p align="center">
-	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/F10.jpg" width="30%" height="30%" alt="F10"/>
+	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/F11.jpg" width="50%" height="50%" alt="F11"/>
+	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/F10.jpg" width="50%" height="50%" alt="F10"/>
 </p>
 
 It is also possible to play the campaign and scenario maps in skirmish mode (drop-down menu in the upper left corner of the map selection screen).
