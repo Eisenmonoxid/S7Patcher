@@ -22,7 +22,6 @@ namespace S7Patcher.Source
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Title = "S7Patcher - \"github.com/Eisenmonoxid/S7Patcher\"";
-            Console.TreatControlCAsInput = true;
             Console.Clear();
 
             FileStream Stream = GetFileStream(args);
