@@ -41,10 +41,22 @@ namespace S7Patcher.Source
             }
 
             HandlePatchingProcess(Stream, USE_DEBUG); // Main patching routine
+            // RegisterLauncher(Stream.Name);
 
+            Console.WriteLine("\nFinished!");
+            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();
+
             return;
+        }
+
+        public static void RegisterLauncher(string Name)
+        {
+            Console.WriteLine("\nUse ProcessAffinity for better performance?");
+            // DEBUG
+            new Launcher(Name, 0xAA); // TODO: Affinity Input based on physical core count?
+            // DEBUG
         }
 
         public static void HandlePatchingProcess(FileStream Stream, bool Debug)
@@ -62,9 +74,6 @@ namespace S7Patcher.Source
 
             Patcher.UpdateConfigurationFile("Options.ini");
             new CheckSumCalculator().WritePEHeaderFileCheckSum(Stream);
-
-            Console.WriteLine("\nFinished!");
-            Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
         }
 
         public static FileStream GetFileStream(string[] args)
