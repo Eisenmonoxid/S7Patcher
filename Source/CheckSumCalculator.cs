@@ -32,6 +32,10 @@ namespace S7Patcher.Source
             long Size = Stream.Length;
 
             CloseStream(Stream);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == false)
+            {
+                return;
+            }
 
             uint CheckSum = UpdatePEHeaderFileCheckSum(Path, Size);
             FileStream CurrentStream = Helpers.Instance.OpenFileStream(Path);

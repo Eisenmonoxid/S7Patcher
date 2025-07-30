@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace S7Patcher.Source
 {
@@ -23,17 +24,20 @@ namespace S7Patcher.Source
             Console.Title = "S7Patcher - \"github.com/Eisenmonoxid/S7Patcher\"";
             Console.Clear();
 
+            Console.WriteLine("S7Patcher currently running on " + RuntimeInformation.OSDescription.ToString());
+
+            bool USE_DEBUG = false;
+            if (args.Length >= 2 && args[1].Contains("-debug"))
+            {
+                USE_DEBUG = true;
+            }
+            Console.WriteLine("USE_DEBUG - Activated: " + USE_DEBUG.ToString() + "\n");
+
             FileStream Stream = GetFileStream(args);
             if (Stream == null)
             {
                 Console.ReadKey();
                 return;
-            }
-            
-            bool USE_DEBUG = false;
-            if (args.Length >= 2 && args[1].Contains("-debug"))
-            {
-                USE_DEBUG = true;
             }
 
             HandlePatchingProcess(Stream, USE_DEBUG); // Main patching routine
