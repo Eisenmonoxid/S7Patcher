@@ -1,22 +1,18 @@
-﻿using System;
+﻿using S7Patcher.Properties;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace S7Patcher.Source
 {
     public sealed class Helpers
     {
         private static readonly Helpers _instance = new();
-        private Helpers() {}
-        public static Helpers Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        private Helpers() { }
+        public static Helpers Instance => _instance;
 
         public bool CreateBackup(string FilePath)
         {
@@ -106,6 +102,98 @@ namespace S7Patcher.Source
             }
 
             return GameVariant.NONE;
+        }
+
+        public void UpdateProfileXML(string Filepath)
+        {
+            List<string> Lines = ReadFileContent(Filepath);
+            if (Lines == null)
+            {
+                return;
+            }
+
+            int StartIndex = Lines.FindIndex(0, Element => Element.Contains("<TitleSystem>"));
+            int EndIndex = Lines.FindIndex(0, Element => Element.Contains("</TitleSystem>"));
+            int SynchIndex = Lines.FindIndex(0, Element => Element.Contains("<LastSynchTime>"));
+
+            if (StartIndex == -1 || EndIndex == -1 || SynchIndex == -1)
+            {
+                return;
+            }
+
+            if ((EndIndex - StartIndex) != 4)
+            {
+                Lines.RemoveRange(StartIndex + 3, (EndIndex - StartIndex) - 4);
+            }
+
+            Lines[StartIndex + 2] = Resources.Branch;
+            Lines[StartIndex + 3] = PopulateTitleSystem(Resources.Title);
+            Lines[SynchIndex + 2] = Resources.Year;
+
+            WriteFileContent(Filepath, Lines);
+        }
+
+        public void UpdateEntriesInOptionsFile(string Filepath)
+        {
+            List<string> Lines = ReadFileContent(Filepath);
+            if (Lines == null)
+            {
+                return;
+            }
+
+            int SystemIndex = Lines.FindIndex(0, Element => Element.Contains("[System]"));
+            if (SystemIndex != -1)
+            {
+                Lines.RemoveRange(SystemIndex - 1, Lines.Count - (SystemIndex - 1));
+                Lines.Insert(SystemIndex - 1, Resources.Options);
+            }
+            else
+            {
+                Lines.Add(Resources.Options);
+            }
+
+            WriteFileContent(Filepath, Lines);
+        }
+
+        private string PopulateTitleSystem(string Input)
+        {
+            List<string> Collection = ["    <Titles>"];
+            string Title = Input.Replace("%x2", "10");
+
+            for (ushort TitleID = 0; TitleID < 4; TitleID++)
+            {
+                Collection.Add(Title.Replace("%x1", TitleID.ToString()));
+            }
+
+            Collection.Add(Input.Replace("%x1", "28").Replace("%x2", "0"));
+            Collection.Add("    </Titles>");
+
+            return string.Join("\r\n", Collection);
+        }
+
+        private List<string> ReadFileContent(string Filepath)
+        {
+            try
+            {
+                return [.. File.ReadAllLines(Filepath, Encoding.UTF8)];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+
+        private void WriteFileContent(string Filepath, List<string> Lines)
+        {
+            try
+            {
+                File.WriteAllLines(Filepath, Lines);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
     }
 }
