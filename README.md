@@ -51,7 +51,7 @@ It is also possible to play the campaign and scenario maps in skirmish mode (dro
 ---
 ## Recommendation
 To gain better performance in the game, set the process priority to "High" and limit the game to your physical CPU cores (4 at max), since it does not work well with SMT/Hyperthreading.  
-(This is already done in the S7Patcher, personally I use `0x1E`, but you can tinker with it to find the best performing mask value for your CPU)
+-> This is already done in the S7Patcher, personally I use `0x1E`, but you can tinker with it to find the best performing mask value for your CPU.   
 For further information, see [here](https://en.wikipedia.org/wiki/Affinity_mask) or [here](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask).
 
 Utilizing [DXVK](https://github.com/doitsujin/dxvk/releases/latest) can also be beneficial for performance and enables you to tweak some settings in the [configuration file](https://github.com/doitsujin/dxvk/wiki/Configuration).
