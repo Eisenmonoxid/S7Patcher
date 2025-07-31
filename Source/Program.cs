@@ -41,7 +41,6 @@ namespace S7Patcher.Source
             }
 
             HandlePatchingProcess(Stream, USE_DEBUG); // Main patching routine
-            // RegisterLauncher(Stream.Name);
 
             Console.WriteLine("\nFinished!");
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
@@ -49,14 +48,6 @@ namespace S7Patcher.Source
             Console.ReadKey();
 
             return;
-        }
-
-        public static void RegisterLauncher(string Name)
-        {
-            Console.WriteLine("\nUse ProcessAffinity for better performance?");
-            // DEBUG
-            new Launcher(Name, 0xAA); // TODO: Affinity Input based on physical core count?
-            // DEBUG
         }
 
         public static void HandlePatchingProcess(FileStream Stream, bool Debug)
@@ -70,6 +61,7 @@ namespace S7Patcher.Source
             {
                 Patcher.PatchOriginalRelease(Debug);
                 Patcher.UpdateConfigurationFile("Profiles.xml");
+                Patcher.AskForAffinity();
             }
 
             Patcher.UpdateConfigurationFile("Options.ini");
