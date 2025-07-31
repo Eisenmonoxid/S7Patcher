@@ -11,6 +11,7 @@ A simple application for the game "The Settlers 7 - Paths to a Kingdom".
 Before using the S7Patcher, make sure that the game has been launched successfully at least once.  
 Afterwards, simply drag&drop your game executable (Settlers7R.exe) onto the S7Patcher application **OR** start the application and input the path to the file
 manually. The S7Patcher works with the original release of the game and both History Editions.  
+
 _(In case your History Edition is from Steam, the executable will have to be extracted with the tool "Steamless" first before using the S7Patcher!)_
 
 *Find the Settlers7R.exe here:* 
@@ -26,6 +27,7 @@ _(In case your History Edition is from Steam, the executable will have to be ext
 - Unlocks all the DLC and UPlay Rewards that became unavailable when the servers got shut down. This includes the DLC maps, the DLC campaign (which can also be played in skirmish now), the "Enormous Advantage" in the ingame map editor, new prestige decoration, 3 new victory points, and (possibly) more.
 - Enables all local features (like the castle forge and the profile system) that required network access.
 - Fixes a few crashes that happened in offline-mode when local features were present.
+- Enables setting the process affinity mask directly in the executable leading to better and smoother game performance.
 
 ---
 ## Development Mode Options
@@ -48,6 +50,8 @@ It is also possible to play the campaign and scenario maps in skirmish mode (dro
 
 ---
 ## Recommendation
-To gain better performance in the game, set the process priority to "High" and limit the game to your physical CPU cores (4 at max), since it does not work well with SMT/Hyperthreading.
+To gain better performance in the game, set the process priority to "High" and limit the game to your physical CPU cores (4 at max), since it does not work well with SMT/Hyperthreading.  
+(This is already done in the S7Patcher, personally I use `0x1E`, but you can tinker with it to find the best performing mask value for your CPU)
+For further information, see [here](https://en.wikipedia.org/wiki/Affinity_mask) or [here](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask).
 
 Utilizing [DXVK](https://github.com/doitsujin/dxvk/releases/latest) can also be beneficial for performance and enables you to tweak some settings in the [configuration file](https://github.com/doitsujin/dxvk/wiki/Configuration).
