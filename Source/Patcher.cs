@@ -21,6 +21,7 @@ namespace S7Patcher.Source
             Helpers.Instance.WriteToFile(GlobalStream, 0x696D83, [0x90, 0x90, 0x90, 0x90, 0x90]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x696DC8, [0xE9, 0x0B, 0x03, 0x00, 0x00, 0x90]);
             Helpers.Instance.WriteToFile(GlobalStream, 0x62F0A9, [0xE9, 0xF2, 0x00, 0x00, 0x00, 0x90]);
+            Helpers.Instance.WriteToFile(GlobalStream, 0x2031C5, [0xEB]);
 
             if (Debug)
             {
