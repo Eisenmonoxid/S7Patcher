@@ -107,7 +107,8 @@ namespace S7Patcher.Source
                     continue;
                 }
 
-                if (byte.TryParse(Value, System.Globalization.NumberStyles.HexNumber, null, out Mask))
+                bool Result = byte.TryParse(Value, System.Globalization.NumberStyles.HexNumber, null, out Mask);
+                if (Result && Mask <= 0x2A)
                 {
                     break;
                 }
