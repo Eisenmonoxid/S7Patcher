@@ -171,6 +171,28 @@ namespace S7Patcher.Source
             return string.Join("\r\n", Collection);
         }
 
+        public byte GetAffinityMaskByte(byte Max)
+        {
+            Console.WriteLine("\nInput Affinity Mask (physical cores the game should run on) as a hexadecimal value (Must be <= " + Max.ToString() + "): \n(e.g. 7 or F or A or 1E)");
+            do
+            {
+                string Value = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(Value))
+                {
+                    Console.WriteLine("Input cannot be empty!");
+                    continue;
+                }
+
+                bool Result = byte.TryParse(Value, System.Globalization.NumberStyles.HexNumber, null, out byte Mask);
+                if (Result && Mask <= Max)
+                {
+                    return Mask;
+                }
+                Console.WriteLine("Erroneous input value. Please try again!");
+            }
+            while (true);
+        }
+
         private List<string> ReadFileContent(string Filepath)
         {
             try
