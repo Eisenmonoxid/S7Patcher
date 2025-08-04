@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace S7Patcher.Source
 {
@@ -173,7 +174,7 @@ namespace S7Patcher.Source
 
         public byte GetAffinityMaskByte(byte Max)
         {
-            Console.WriteLine("\nInput Affinity Mask (physical cores the game should run on) as a hexadecimal value (Must be <= " + Max.ToString() + "): \n(e.g. 7 or F or A or 1E)");
+            Console.WriteLine("\nInput Affinity Mask (physical cores the game should run on) as a hexadecimal value (Must be <= 0x" + $"{Max:X}): \n(e.g. 7 or F or A or 1E)");
             do
             {
                 string Value = Console.ReadLine();

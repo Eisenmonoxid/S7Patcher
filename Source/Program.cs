@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace S7Patcher.Source
@@ -14,7 +15,7 @@ namespace S7Patcher.Source
 
     internal class Program
     {
-        public static GameVariant CurrentGameVariant = GameVariant.NONE;
+        public static GameVariant Variant = GameVariant.NONE;
         private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
 
         static void Main(string[] args)
@@ -24,7 +25,8 @@ namespace S7Patcher.Source
             Console.Title = "S7Patcher - \"github.com/Eisenmonoxid/S7Patcher\"";
             Console.Clear();
 
-            Console.WriteLine("S7Patcher currently running on " + RuntimeInformation.OSDescription.ToString());
+            string Version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            Console.WriteLine("S7Patcher v" + Version + " currently running on " + RuntimeInformation.OSDescription.ToString());
 
             bool USE_DEBUG = false;
             if (args.Length >= 2 && args[1].Contains("-debug"))
@@ -40,7 +42,7 @@ namespace S7Patcher.Source
                 return;
             }
 
-            HandlePatchingProcess(Stream, CurrentGameVariant, USE_DEBUG); // Main patching routine
+            HandlePatchingProcess(Stream, Variant, USE_DEBUG); // Main patching routine
 
             Console.WriteLine("\nFinished!");
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
@@ -99,10 +101,10 @@ namespace S7Patcher.Source
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
             }
 
-            CurrentGameVariant = Helpers.Instance.GetExecutableVariant(Stream);
-            if (CurrentGameVariant != GameVariant.NONE)
+            Variant = Helpers.Instance.GetExecutableVariant(Stream);
+            if (Variant != GameVariant.NONE)
             {
-                Console.WriteLine("Found Game Variant " + CurrentGameVariant.ToString() + ". \nGoing to patch file: " + Filepath);
+                Console.WriteLine("Found Game Variant " + Variant.ToString() + ". \nGoing to patch file: " + Filepath);
                 return Stream;
             }
             else
