@@ -40,7 +40,7 @@ namespace S7Patcher.Source
                 return;
             }
 
-            HandlePatchingProcess(Stream, USE_DEBUG); // Main patching routine
+            HandlePatchingProcess(Stream, CurrentGameVariant, USE_DEBUG); // Main patching routine
 
             Console.WriteLine("\nFinished!");
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
@@ -50,21 +50,9 @@ namespace S7Patcher.Source
             return;
         }
 
-        public static void HandlePatchingProcess(FileStream Stream, bool Debug)
+        public static void HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
         {
-            Patcher Patcher = new(Stream);
-            if (CurrentGameVariant == GameVariant.HE_STEAM || CurrentGameVariant == GameVariant.HE_UBI)
-            {
-                Patcher.PatchHistoryEdition(CurrentGameVariant, Debug);
-            }
-            else
-            {
-                Patcher.PatchOriginalRelease(Debug);
-                Patcher.UpdateConfigurationFile("Profiles.xml");
-                Patcher.AskForAffinity();
-            }
-
-            Patcher.UpdateConfigurationFile("Options.ini");
+            new Patcher(Stream, Variant, Debug).PatchGameWrapper();
             new CheckSumCalculator().WritePEHeaderFileCheckSum(Stream);
         }
 
