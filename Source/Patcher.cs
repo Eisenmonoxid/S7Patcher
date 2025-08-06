@@ -116,7 +116,7 @@ namespace S7Patcher.Source
                 return;
             };
 
-            byte Mask = Helpers.Instance.GetAffinityMaskByte(0x2A);
+            byte Mask = Helpers.Instance.GetAffinityMaskByte();
             Console.WriteLine("Going to patch Affinity with value: 0x" + $"{Mask:X}");
             switch (GlobalID)
             {

@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.Devices.Power;
 
 namespace S7Patcher.Source
 {
@@ -172,26 +174,56 @@ namespace S7Patcher.Source
             return string.Join("\r\n", Collection);
         }
 
-        public byte GetAffinityMaskByte(byte Max)
+        public byte GetAffinityMaskByte()
         {
-            Console.WriteLine("\nInput Affinity Mask (physical cores the game should run on) as a hexadecimal value (Must be <= 0x" + $"{Max:X}): \n(e.g. 7 or F or A or 1E)");
+            // Max 0xFF -> 255
+            int Cores = Environment.ProcessorCount;
+            Console.WriteLine("\nFound " + Cores.ToString() + " processors!");
+            Console.WriteLine("Input the physical cores the game should run on (8 at max) separated by ','.\n(Example: Game should run on core 2 and 3 -> Input: 2,3)");
+
             do
             {
-                string Value = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(Value))
+                int[] Input = ParseAffinityInput(Console.ReadLine());
+                if (Input == null)
                 {
-                    Console.WriteLine("Input cannot be empty!");
                     continue;
                 }
 
-                bool Result = byte.TryParse(Value, System.Globalization.NumberStyles.HexNumber, null, out byte Mask);
-                if (Result && Mask <= Max)
+                byte Mask = 0x0;
+                foreach (var Element in Input)
                 {
-                    return Mask;
+                    Mask |= (byte)(1 << Element);
                 }
-                Console.WriteLine("Erroneous input value. Please try again!");
+
+                Console.WriteLine("\nWriting Binary Mask " + Convert.ToString(Mask, 2).PadLeft(8, '0') + ".");
+                return Mask;
             }
             while (true);
+        }
+
+        private int[] ParseAffinityInput(string Value)
+        {
+            if (string.IsNullOrWhiteSpace(Value))
+            {
+                Console.WriteLine("Input cannot be empty!");
+                return null;
+            }
+
+            string Pattern = @"^[0-7](?:,[0-7])*$";
+            if (Regex.IsMatch(Value, Pattern) == false)
+            {
+                Console.WriteLine("Erroneous input value. Please try again!");
+                return null;
+            }
+
+            int[] Input = Value.Split(',').Length == 1 ? [int.Parse(Value)] : [.. Value.Split(',').Select(int.Parse)];
+            if (Input.Length > 8)
+            {
+                Console.WriteLine("Erroneous input value. Please try again!");
+                return null;
+            }
+
+            return Input;
         }
 
         private List<string> ReadFileContent(string Filepath)
