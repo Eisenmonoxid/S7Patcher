@@ -177,9 +177,10 @@ namespace S7Patcher.Source
         public byte GetAffinityMaskByte()
         {
             // Max 0xFF -> 255
+            // ^ The above is wrong, since in x86 assembly a push is SIGN-EXTEND, meaning 7F (127) is the max value. 
             int Cores = Environment.ProcessorCount;
             Console.WriteLine("\nFound " + Cores.ToString() + " processors!");
-            Console.WriteLine("Input the physical cores the game should run on (8 at max) separated by ','.\n(Example: Game should run on core 2 and 3 -> Input: 2,3)");
+            Console.WriteLine("Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: Game should run on core 2 and 3 -> Input: 2,3)");
 
             do
             {
@@ -195,7 +196,7 @@ namespace S7Patcher.Source
                     Mask |= (byte)(1 << Element);
                 }
 
-                Console.WriteLine("\nWriting Binary Mask " + Convert.ToString(Mask, 2).PadLeft(8, '0') + ".");
+                Console.WriteLine("\nWriting Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".");
                 return Mask;
             }
             while (true);
@@ -217,7 +218,7 @@ namespace S7Patcher.Source
             }
 
             int[] Input = Value.Split(',').Length == 1 ? [int.Parse(Value)] : [.. Value.Split(',').Select(int.Parse)];
-            if (Input.Length > 8)
+            if (Input.Length > 7)
             {
                 Console.WriteLine("Erroneous input value. Please try again!");
                 return null;
