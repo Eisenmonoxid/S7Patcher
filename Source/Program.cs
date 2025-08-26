@@ -7,7 +7,6 @@ namespace S7Patcher.Source
 {
     public enum GameVariant
     {
-        NONE,
         ORIGINAL,
         HE_STEAM,
         HE_UBI
@@ -15,7 +14,7 @@ namespace S7Patcher.Source
 
     internal class Program
     {
-        public static GameVariant Variant = GameVariant.NONE;
+        public static GameVariant? Variant;
         private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
 
         static void Main(string[] args)
@@ -52,7 +51,7 @@ namespace S7Patcher.Source
             return;
         }
 
-        public static void HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
+        public static void HandlePatchingProcess(FileStream Stream, GameVariant? Variant, bool Debug)
         {
             new Patcher(Stream, Variant, Debug).PatchGameWrapper();
             new CheckSumCalculator().WritePEHeaderFileCheckSum(Stream);
@@ -102,7 +101,7 @@ namespace S7Patcher.Source
             }
 
             Variant = Helpers.Instance.GetExecutableVariant(Stream);
-            if (Variant != GameVariant.NONE)
+            if (Variant != null)
             {
                 Console.WriteLine("Found Game Variant " + Variant.ToString() + ". \nGoing to patch file: " + Filepath);
                 return Stream;

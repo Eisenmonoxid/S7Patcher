@@ -12,7 +12,7 @@ namespace S7Patcher.Source
     public sealed class Helpers
     {
         private static readonly Helpers _instance = new();
-        private Helpers() { }
+        private Helpers() {}
         public static Helpers Instance => _instance;
 
         public bool CreateBackup(string FilePath)
@@ -74,7 +74,7 @@ namespace S7Patcher.Source
             return Path.Combine(Path.GetDirectoryName(ExecPath), "Data", "Base", "_Dbg", "Bin", "Release", "Settlers7R.exe");
         }
 
-        public GameVariant GetExecutableVariant(FileStream Stream)
+        public GameVariant? GetExecutableVariant(FileStream Stream)
         {
             byte[] Identifier = [0x8B, 0x01];
             byte[] Result = new byte[Identifier.Length];
@@ -102,7 +102,7 @@ namespace S7Patcher.Source
                 }
             }
 
-            return GameVariant.NONE;
+            return null;
         }
 
         public void UpdateProfileXML(string Filepath)
@@ -178,7 +178,8 @@ namespace S7Patcher.Source
             // ^ The above is wrong, since in x86 assembly a push is SIGN-EXTEND, meaning 7F (127) is the max value. 
             int Cores = Environment.ProcessorCount;
             Console.WriteLine("\nFound " + Cores.ToString() + " processors!");
-            Console.WriteLine("Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: Game should run on core 2 and 3 -> Input: 2,3)");
+            Console.WriteLine("Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
+                "Game should run on core 2 and 3 -> Input: 2,3)");
 
             do
             {

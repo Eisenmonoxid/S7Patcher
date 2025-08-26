@@ -9,18 +9,18 @@ namespace S7Patcher.Source
     internal class CheckSumCalculator
     {
         [DllImport("imagehlp.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        private static extern int CheckSumMappedFile(SafeMemoryMappedViewHandle BaseAddress, uint FileLength, ref uint HeaderSum, ref uint CheckSum);
+        private static extern int CheckSumMappedFile(SafeMemoryMappedViewHandle BaseAddress, uint FileLength, 
+            ref uint HeaderSum, ref uint CheckSum);
         private uint UpdatePEHeaderFileCheckSum(string Path, long Size)
         {
+            // This will only work on Windows
             uint CheckSum = 0x0;
             uint HeaderSum = 0x0;
-            using (MemoryMappedFile Mapping = MemoryMappedFile.CreateFromFile(Path))
-            {
-                using (MemoryMappedViewAccessor View = Mapping.CreateViewAccessor())
-                {
-                    CheckSumMappedFile(View.SafeMemoryMappedViewHandle, (uint)Size, ref HeaderSum, ref CheckSum); // This will only work on Windows
-                };
-            };
+
+            using MemoryMappedFile Mapping = MemoryMappedFile.CreateFromFile(Path);
+            using MemoryMappedViewAccessor View = Mapping.CreateViewAccessor();
+
+            CheckSumMappedFile(View.SafeMemoryMappedViewHandle, (uint)Size, ref HeaderSum, ref CheckSum); 
 
             Console.WriteLine("Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
             return CheckSum;
@@ -50,7 +50,7 @@ namespace S7Patcher.Source
 
         private void CloseStream(FileStream Stream)
         {
-            if (Stream != null && (Stream.CanRead || Stream.CanWrite))
+            if (Stream != null)
             {
                 Stream.Close();
                 Stream.Dispose();
