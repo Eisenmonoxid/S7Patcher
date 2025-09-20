@@ -16,7 +16,7 @@
 		<BuiltInComInteropSupport>False</BuiltInComInteropSupport>
 		<IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
 		<PublishTrimmed>True</PublishTrimmed>
-		<PublishAot>False</PublishAot>
+		<PublishAot>True</PublishAot>
 		<PublishSingleFile>True</PublishSingleFile>
 		<SelfContained>True</SelfContained>
 		<DebugType>none</DebugType>
@@ -43,6 +43,8 @@
     <Authors>Eisenmonoxid</Authors>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <Version>1.8</Version>
+    <PublishTrimmed>True</PublishTrimmed>
+    <Company>Eisenmonoxid</Company>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

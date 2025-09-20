@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -27,11 +28,7 @@ namespace S7Patcher.Source
             string Version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
             Console.WriteLine("S7Patcher v" + Version + " currently running on " + RuntimeInformation.OSDescription.ToString());
 
-            bool USE_DEBUG = false;
-            if (args.Length >= 2 && args[1].Contains("-debug"))
-            {
-                USE_DEBUG = true;
-            }
+            bool USE_DEBUG = args.Where(Element => Element.Contains("-debug")).Any();
             Console.WriteLine("USE_DEBUG - Activated: " + USE_DEBUG.ToString() + "\n");
 
             FileStream Stream = GetFileStream(args);
@@ -60,16 +57,12 @@ namespace S7Patcher.Source
         public static FileStream GetFileStream(string[] args)
         {
             FileStream Stream;
-            string Filepath;
+            string Filepath = args.Where(Element => Element.EndsWith(".exe")).FirstOrDefault();
 
-            if (args.Length == 0)
+            if (Filepath == default)
             {
                 Console.WriteLine("Please input the executable path that you want to patch:");
                 Filepath = Console.ReadLine();
-            }
-            else
-            {
-                Filepath = args[0];
             }
 
             if (File.Exists(Filepath) == false)
