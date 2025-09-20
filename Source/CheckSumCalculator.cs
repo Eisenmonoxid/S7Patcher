@@ -50,11 +50,8 @@ namespace S7Patcher.Source
 
         private void CloseStream(FileStream Stream)
         {
-            if (Stream != null)
-            {
-                Stream.Close();
-                Stream.Dispose();
-            }
+            Stream?.Flush();
+            Stream?.Dispose();
         }
     }
 }

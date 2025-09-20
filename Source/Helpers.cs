@@ -69,10 +69,8 @@ namespace S7Patcher.Source
             return Convert.ToHexString(MD.ComputeHash(Stream)).ToLower();
         }
 
-        public string RedirectLauncherFilePath(string ExecPath)
-        {
-            return Path.Combine(Path.GetDirectoryName(ExecPath), "Data", "Base", "_Dbg", "Bin", "Release", "Settlers7R.exe");
-        }
+        public string RedirectLauncherFilePath(string ExecPath) => 
+            Path.Combine(Path.GetDirectoryName(ExecPath), "Data", "Base", "_Dbg", "Bin", "Release", "Settlers7R.exe");
 
         public GameVariant? GetExecutableVariant(FileStream Stream)
         {
@@ -107,11 +105,7 @@ namespace S7Patcher.Source
 
         public void UpdateProfileXML(string Filepath)
         {
-            List<string> Lines = ReadFileContent(Filepath);
-            if (Lines == null)
-            {
-                return;
-            }
+            List<string> Lines = ReadFileContent(Filepath) ?? [];
 
             int StartIndex = Lines.FindIndex(0, Element => Element.Contains("<TitleSystem>"));
             int EndIndex = Lines.FindIndex(0, Element => Element.Contains("</TitleSystem>"));

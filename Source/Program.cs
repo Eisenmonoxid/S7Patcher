@@ -41,7 +41,7 @@ namespace S7Patcher.Source
                 return;
             }
 
-            HandlePatchingProcess(Stream, Variant, USE_DEBUG); // Main patching routine
+            HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG); // Main patching routine
 
             Console.WriteLine("\nFinished!");
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
@@ -51,7 +51,7 @@ namespace S7Patcher.Source
             return;
         }
 
-        public static void HandlePatchingProcess(FileStream Stream, GameVariant? Variant, bool Debug)
+        public static void HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
         {
             new Patcher(Stream, Variant, Debug).PatchGameWrapper();
             new CheckSumCalculator().WritePEHeaderFileCheckSum(Stream);

@@ -1,44 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>false</UseWindowsForms>
     <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>
-    </DefineConstants>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <DefineConstants>
-    </DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+	    <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+		<CleanBeforeBuild>True</CleanBeforeBuild>
+		<BuiltInComInteropSupport>False</BuiltInComInteropSupport>
+		<IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+		<PublishTrimmed>True</PublishTrimmed>
+		<PublishAot>False</PublishAot>
+		<PublishSingleFile>True</PublishSingleFile>
+		<SelfContained>True</SelfContained>
+		<DebugType>none</DebugType>
+		<InvariantGlobalization>True</InvariantGlobalization>
+		<EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
+		<StripSymbols>True</StripSymbols>
+		<DebuggerSupport>False</DebuggerSupport>
+		<EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
+		<EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
+		<MetadataUpdaterSupport>False</MetadataUpdaterSupport>
+		<MetricsSupport>False</MetricsSupport>
+		<XmlResolverIsNetworkingEnabledByDefault>False</XmlResolverIsNetworkingEnabledByDefault>
+    </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <AssemblyVersion>1.7.0.0</AssemblyVersion>
-    <FileVersion>1.7.0.0</FileVersion>
+    <AssemblyVersion>1.8.0.0</AssemblyVersion>
+    <FileVersion>1.8.0.0</FileVersion>
     <NuGetAudit>False</NuGetAudit>
     <Copyright>Eisenmonoxid</Copyright>
-    <PublishTrimmed>True</PublishTrimmed>
-    <PublishAot>True</PublishAot>
     <Authors>Eisenmonoxid</Authors>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
-    <Version>1.7</Version>
-	
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <PublishSingleFile>true</PublishSingleFile>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <StripSymbols>true</StripSymbols>
+    <Version>1.8</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

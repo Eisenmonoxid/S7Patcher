@@ -3,7 +3,7 @@ using System.IO;
 
 namespace S7Patcher.Source
 {
-    internal class Patcher(FileStream GlobalStream, GameVariant? GlobalID, bool GlobalDebug)
+    internal class Patcher(FileStream GlobalStream, GameVariant GlobalID, bool GlobalDebug)
     {
         public void PatchGameWrapper()
         {
@@ -18,7 +18,7 @@ namespace S7Patcher.Source
             }
 
             UpdateConfigurationFile("Options.ini");
-            AskForAffinity();
+            UpdateProcessAffinity();
         }
 
         private void PatchOriginalRelease()
@@ -41,29 +41,17 @@ namespace S7Patcher.Source
 
             if (GlobalDebug)
             {
-                Helpers.Instance.WriteToFile(GlobalStream, 0x00D2D9, [0x90, 0x90]); // Always show message before startup happens
+                Helpers.Instance.WriteToFile(GlobalStream, 0x00D2D9, [0x90, 0x90]);
             }
         }
 
         private void PatchHistoryEdition()
         {
-            if (GlobalID == GameVariant.HE_STEAM)
-            {
-                Helpers.Instance.WriteToFile(GlobalStream, 0x13CFEC, [0x94]);
+            Helpers.Instance.WriteToFile(GlobalStream, (GlobalID == GameVariant.HE_UBI) ? 0x13D9FC : 0x13CFEC, [0x94]);
 
-                if (GlobalDebug)
-                {
-                    Helpers.Instance.WriteToFile(GlobalStream, 0xAC5435, [0x90, 0x90]); // Always show message before startup happens
-                }
-            }
-            else if (GlobalID == GameVariant.HE_UBI)
+            if (GlobalDebug)
             {
-                Helpers.Instance.WriteToFile(GlobalStream, 0x13D9FC, [0x94]);
-
-                if (GlobalDebug)
-                {
-                    Helpers.Instance.WriteToFile(GlobalStream, 0xAC5D4A, [0x90, 0x90]); // Always show message before startup happens
-                }
+                Helpers.Instance.WriteToFile(GlobalStream, (GlobalID == GameVariant.HE_UBI) ? 0xAC5D4A : 0xAC5435, [0x90, 0x90]);
             }
         }
 
@@ -104,7 +92,7 @@ namespace S7Patcher.Source
             }
         }
 
-        private void AskForAffinity()
+        private void UpdateProcessAffinity()
         {
             Console.WriteLine("\nUpdate Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
             int Input = Console.Read();
@@ -122,7 +110,7 @@ namespace S7Patcher.Source
                 GameVariant.ORIGINAL => () => UpdateProcessAffinityOriginal(Mask),
                 GameVariant.HE_STEAM => () => UpdateProcessAffinitySteamHE(Mask),
                 GameVariant.HE_UBI => () => UpdateProcessAffinityUbiHE(Mask),
-                _ or null => () => {},
+                _ => () => {},
             };
 
             Affinity();
