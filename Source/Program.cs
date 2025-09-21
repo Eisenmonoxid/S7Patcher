@@ -15,7 +15,7 @@ namespace S7Patcher.Source
 
     internal class Program
     {
-        public static GameVariant? Variant;
+        private static GameVariant? Variant;
         private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
 
         static void Main(string[] args)
@@ -87,9 +87,7 @@ namespace S7Patcher.Source
             if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()) == true)
             {
                 Console.WriteLine("Launcher found! Redirecting Filepath!");
-
-                Stream.Close();
-                Stream.Dispose();
+                Helpers.Instance.CloseFileStream(Stream);
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
             }
 
@@ -102,9 +100,7 @@ namespace S7Patcher.Source
             else
             {
                 Console.WriteLine("ERROR - Executable was not valid! Aborting ...");
-
-                Stream.Close();
-                Stream.Dispose();
+                Helpers.Instance.CloseFileStream(Stream);
                 return null;
             }
         }

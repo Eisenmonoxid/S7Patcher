@@ -31,7 +31,7 @@ namespace S7Patcher.Source
             string Path = Stream.Name;
             long Size = Stream.Length;
 
-            CloseStream(Stream);
+            Helpers.Instance.CloseFileStream(Stream);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == false)
             {
                 return;
@@ -45,13 +45,7 @@ namespace S7Patcher.Source
             }
 
             Helpers.Instance.WriteToFile(CurrentStream, 0x168, BitConverter.GetBytes(CheckSum));
-            CloseStream(CurrentStream);
-        }
-
-        private void CloseStream(FileStream Stream)
-        {
-            Stream?.Flush();
-            Stream?.Dispose();
+            Helpers.Instance.CloseFileStream(CurrentStream);
         }
     }
 }

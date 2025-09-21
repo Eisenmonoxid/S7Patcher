@@ -11,9 +11,8 @@ namespace S7Patcher.Source
 {
     public sealed class Helpers
     {
-        private static readonly Helpers _instance = new();
         private Helpers() {}
-        public static Helpers Instance => _instance;
+        public static Helpers Instance {get;} = new();
 
         public bool CreateBackup(string FilePath)
         {
@@ -60,7 +59,16 @@ namespace S7Patcher.Source
                 return null;
             }
 
+            Console.WriteLine("FileStream Opened!");
             return Stream;
+        }
+
+        public void CloseFileStream(FileStream Stream)
+        {
+            Stream?.Flush();
+            Stream?.Dispose();
+
+            Console.WriteLine("FileStream Closed!");
         }
 
         public string GetFileHash(FileStream Stream)
