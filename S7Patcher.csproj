@@ -6,33 +6,37 @@
     <UseWindowsForms>false</UseWindowsForms>
     <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
   </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-	    <DebugType>full</DebugType>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-		<CleanBeforeBuild>True</CleanBeforeBuild>
-		<BuiltInComInteropSupport>False</BuiltInComInteropSupport>
-		<IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
-		<PublishTrimmed>True</PublishTrimmed>
-		<PublishAot>True</PublishAot>
-		<PublishSingleFile>True</PublishSingleFile>
-		<SelfContained>True</SelfContained>
-		<DebugType>none</DebugType>
-		<InvariantGlobalization>True</InvariantGlobalization>
-		<EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
-		<StripSymbols>True</StripSymbols>
-		<DebuggerSupport>False</DebuggerSupport>
-		<EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
-		<EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
-		<MetadataUpdaterSupport>False</MetadataUpdaterSupport>
-		<MetricsSupport>False</MetricsSupport>
-		<XmlResolverIsNetworkingEnabledByDefault>False</XmlResolverIsNetworkingEnabledByDefault>
-    </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+	<DebugType>full</DebugType>
+  </PropertyGroup>
+	
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <CleanBeforeBuild>True</CleanBeforeBuild>
+    <BuiltInComInteropSupport>False</BuiltInComInteropSupport>
+    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>True</PublishTrimmed>
+    <PublishAot>True</PublishAot>
+    <PublishSingleFile>True</PublishSingleFile>
+    <SelfContained>True</SelfContained>
+    <DebugType>none</DebugType>
+    <InvariantGlobalization>True</InvariantGlobalization>
+    <EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
+    <StripSymbols>True</StripSymbols>
+    <DebuggerSupport>False</DebuggerSupport>
+    <EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
+    <MetadataUpdaterSupport>False</MetadataUpdaterSupport>
+    <MetricsSupport>False</MetricsSupport>
+    <XmlResolverIsNetworkingEnabledByDefault>False</XmlResolverIsNetworkingEnabledByDefault>
+  </PropertyGroup>
+	
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
+	
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
@@ -41,11 +45,12 @@
     <NuGetAudit>False</NuGetAudit>
     <Copyright>Eisenmonoxid</Copyright>
     <Authors>Eisenmonoxid</Authors>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <Version>1.8</Version>
     <PublishTrimmed>True</PublishTrimmed>
     <Company>Eisenmonoxid</Company>
+    <PublishAot>True</PublishAot>
   </PropertyGroup>
+	
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>

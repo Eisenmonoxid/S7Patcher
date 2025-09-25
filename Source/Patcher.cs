@@ -42,6 +42,8 @@ namespace S7Patcher.Source
             if (GlobalDebug)
             {
                 Helpers.Instance.WriteToFile(GlobalStream, 0x00D2D9, [0x90, 0x90]);
+                Helpers.Instance.WriteToFile(GlobalStream, 0x58362A, [0x50, 0xE8, 0x10, 0x70, 0xA9, 0xFF, 0xEB, 
+                    0x18, 0x90, 0x90, 0x90]); // Log
             }
         }
 

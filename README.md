@@ -4,7 +4,7 @@ A simple application for the game "The Settlers 7 - Paths to a Kingdom".
 	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/S7.jpg" width="60%" height="60%" alt="Header"/>
 </p>
 
-**Should you have any questions, errors or feature requests: [Discord](https://discord.gg/7SGkQtAAET).**
+**Should you have any questions: [Settlers Discord Server](https://discord.gg/7SGkQtAAET).**
 
 ---
 ## Usage
@@ -58,3 +58,13 @@ physical cores of your CPU when patching.
 For further information on this topic, see [here](https://en.wikipedia.org/wiki/Affinity_mask) or [here](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask).
 
 Utilizing [DXVK](https://github.com/doitsujin/dxvk/releases/latest) can also be beneficial for performance and enables you to tweak some settings in the [configuration file](https://github.com/doitsujin/dxvk/wiki/Configuration) (like enabling VSync).
+
+---
+## Command Line Arguments
+Use the command line argument `-debug` when launching the Patcher to enable some additional options when patching, such as restoring the functionality
+of the LUA functions `UI.WriteToLog(_string)` and `UI.WriteToConsole(_string)` (only Gold Edition, not History Editions). This can be helpful 
+when working with LUA scripts.
+
+---
+## Unpacking Archive Files
+The archive files `.bba` can be packed/unpacked using [this Japanese tool](https://wikiwiki.jp/settlers7/SettlersArchiver%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9). 
