@@ -50,8 +50,12 @@
     <Company>Eisenmonoxid</Company>
     <PublishAot>True</PublishAot>
   </PropertyGroup>
-	
+
   <ItemGroup>
     <Content Include="favicon.ico" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <EmbeddedResource Include="Source\PatchData.bin" />
   </ItemGroup>
 </Project>

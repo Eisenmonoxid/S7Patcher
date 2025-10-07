@@ -1,60 +1,84 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace S7Patcher.Source
 {
     internal class Patcher(FileStream GlobalStream, GameVariant GlobalID, bool GlobalDebug)
     {
-        public void PatchGameWrapper()
+        private const byte Version = 0x1;
+        private BinaryParser Parser;
+        private readonly Dictionary<GameVariant, byte> Mapping = new()
         {
-            if (GlobalID == GameVariant.HE_STEAM || GlobalID == GameVariant.HE_UBI)
+            {GameVariant.ORIGINAL, 0x0},
+            {GameVariant.HE_STEAM, 0x1},
+            {GameVariant.HE_UBI, 0x2}
+        };
+
+        public bool PatchGameWrapper()
+        {
+            Stream BinaryStream;
+            try
             {
-                PatchHistoryEdition();
+                BinaryStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Source.PatchData.bin");
+                Parser = new(BinaryStream);
             }
-            else
+            catch (Exception ex)
             {
-                PatchOriginalRelease();
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+
+            if (Mapping.TryGetValue(GlobalID, out byte Value) == false)
+            {
+                return false;
+            }
+
+            bool Error = PatchGame(Value);
+            if (GlobalID == GameVariant.ORIGINAL)
+            {
                 UpdateConfigurationFile("Profiles.xml");
             }
 
             UpdateConfigurationFile("Options.ini");
-            UpdateProcessAffinity();
+            Error = UpdateProcessAffinity(Value);
+
+            Parser.Dispose();
+            return Error;
         }
 
-        private void PatchOriginalRelease()
+        private bool PatchGame(byte ID)
         {
-            Helpers.Instance.WriteToFile(GlobalStream, 0x00D40D, [0xE8, 0xBC, 0x99, 0x68, 0x00, 0x90]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x696DCE, [0x55, 0x89, 0xE5, 0xC6, 0x05, 0x79, 0x5B, 0x0E, 
-                0x01, 0x01, 0x89, 0xEC, 0x5D, 0xC3]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x1A978E, [0xEB]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x1A977C, [0x90, 0x90]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x64477C, [0xB0, 0x00]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x21929C, [0xB0, 0x00]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x219224, [0xB0, 0x00]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x195C34, [0xEB, 0x15]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x69000F, [0x94]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x58BC2E, [0x01]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x696D83, [0x90, 0x90, 0x90, 0x90, 0x90]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x696DC8, [0xE9, 0x0B, 0x03, 0x00, 0x00, 0x90]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x62F0A9, [0xE9, 0xF2, 0x00, 0x00, 0x00, 0x90]);
-            Helpers.Instance.WriteToFile(GlobalStream, 0x2031C5, [0xEB]);
+            if (Parser.GetFileVersion() != Version)
+            {
+                Console.WriteLine("Error: Binary Data Version Mismatch! Aborting ...");
+                return false;
+            }
 
+            bool Error = WriteMapping(ID);
             if (GlobalDebug)
             {
-                Helpers.Instance.WriteToFile(GlobalStream, 0x00D2D9, [0x90, 0x90]);
-                Helpers.Instance.WriteToFile(GlobalStream, 0x58362A, [0x50, 0xE8, 0x10, 0x70, 0xA9, 0xFF, 0xEB, 
-                    0x18, 0x90, 0x90, 0x90]); // Log
+                Error = WriteMapping(ID, "DBG");
             }
+
+            return Error;
         }
-
-        private void PatchHistoryEdition()
+        
+        private bool WriteMapping(byte ID, string Block = "")
         {
-            Helpers.Instance.WriteToFile(GlobalStream, (GlobalID == GameVariant.HE_UBI) ? 0x13D9FC : 0x13CFEC, [0x94]);
-
-            if (GlobalDebug)
+            if (Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block) == false)
             {
-                Helpers.Instance.WriteToFile(GlobalStream, (GlobalID == GameVariant.HE_UBI) ? 0xAC5D4A : 0xAC5435, [0x90, 0x90]);
+                Console.WriteLine("Error: Could not parse binary data! Aborting ...");
+                return false;
             }
+
+            foreach (var Entry in PatchMapping)
+            {
+                Helpers.Instance.WriteToFile(GlobalStream, Entry.Key, Entry.Value);
+            }
+
+            return true;
         }
 
         private void UpdateConfigurationFile(string Name)
@@ -94,81 +118,42 @@ namespace S7Patcher.Source
             }
         }
 
-        private void UpdateProcessAffinity()
+        private bool UpdateProcessAffinity(byte ID)
         {
             Console.WriteLine("\nUpdate Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
             int Input = Console.Read();
             if (Input != '0')
             {
                 Console.WriteLine("Skipping Affinity ...");
-                return;
-            };
+                return false;
+            }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
             Console.WriteLine("Going to patch Affinity with value: 0x" + $"{Mask:X}");
 
-            Action Affinity = GlobalID switch
+            if (WriteMapping(ID, "AFF"))
             {
-                GameVariant.ORIGINAL => () => UpdateProcessAffinityOriginal(Mask),
-                GameVariant.HE_STEAM => () => UpdateProcessAffinitySteamHE(Mask),
-                GameVariant.HE_UBI => () => UpdateProcessAffinityUbiHE(Mask),
-                _ => () => {},
-            };
+                long Position;
+                switch (GlobalID)
+                {
+                    case GameVariant.ORIGINAL:
+                        Position = 0x62F030;
+                        break;
+                    case GameVariant.HE_STEAM:
+                        Position = 0x45899F;
+                        break;
+                    case GameVariant.HE_UBI:
+                        Position = 0x458BD1;
+                        break;
+                    default:
+                        return false;
+                }
 
-            Affinity();
-        }
+                Helpers.Instance.WriteToFile(GlobalStream, Position, [Mask]);
+                return true;
+            }
 
-        private void UpdateProcessAffinityOriginal(byte Mask)
-        {
-            Helpers.Instance.WriteToFile(GlobalStream, 0x62F0AE, [0x55, 0x8B, 0xEC, 0x68, 0x38, 0x73, 0xF2, 0x00, 0xFF, 
-                0x15, 0x70, 0xF1, 0xEB, 0x00, 0x68, 0xC8, 0x25, 0xF3, 0x00, 0x50, 0xFF, 0x15, 0x24, 0xF1, 0xEB, 0x00, 
-                0x85, 0xC0, 0x74, 0x10, 0x90, 0x90, 0x90, 0x89, 0xC3, 0x6A, Mask, 0xFF, 0x15, 0x3C, 0xF2, 0xEB, 0x00, 
-                0x50, 0xFF, 0xD3, 0x8B, 0xE5, 0x5D, 0xC3, 0x90]); // Create new function to set process affinity
-
-            Helpers.Instance.WriteToFile(GlobalStream, 0xB311C8, [0x53, 0x65, 0x74, 0x50, 0x72, 0x6F, 0x63, 0x65, 0x73, 0x73, 0x41, 
-                0x66, 0x66, 0x69, 0x6E, 0x69, 0x74, 0x79, 0x4D, 0x61, 0x73, 0x6B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]); 
-            // Update function name
-
-            Helpers.Instance.WriteToFile(GlobalStream, 0x00D944, [0xE8, 0x65, 0x17, 0x62, 0x00, 0xEB, 0x08, 0x90, 0x90, 0x90, 
-                0x90, 0x90, 0x90, 0x90]); // Override Thread Affinity & Jump
-        }
-
-        private void UpdateProcessAffinitySteamHE(byte Mask)
-        {
-            Helpers.Instance.WriteToFile(GlobalStream, 0x45897B, [0xE9, 0x9F, 0x00, 0x00, 0x00, 0x90, 0x55, 0x8B, 0xEC,
-                0x68, 0xF8, 0xEA, 0x12, 0x01, 0xFF, 0x15, 0xE8, 0xF1, 0x04, 0x01, 0x68, 0x18, 0x20, 0x13, 0x01, 0x50,
-                0xFF, 0x15, 0xB4, 0xF0, 0x04, 0x01, 0x85, 0xC0, 0x74, 0x0D, 0x89, 0xC3, 0x6A, Mask, 0xFF, 0x15, 0x68,
-                0xF1, 0x04, 0x01, 0x50, 0xFF, 0xD3, 0x8B, 0xE5, 0x5D, 0x31, 0xC0, 0xC3, 0x90]); 
-            // Create new function to set process affinity
-
-            Helpers.Instance.WriteToFile(GlobalStream, 0xD30C18, [0x53, 0x65, 0x74, 0x50, 0x72, 0x6F, 0x63, 0x65, 0x73,
-                0x73, 0x41, 0x66, 0x66, 0x69, 0x6E, 0x69, 0x74, 0x79, 0x4D, 0x61, 0x73, 0x6B, 0x00, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x00]); // Update function name
-
-            Helpers.Instance.WriteToFile(GlobalStream, 0xAC5BF0, [0xE8, 0x8C, 0x2D, 0x99, 0xFF, 0xEB, 0x17, 
-                0x90, 0x90, 0x90]); // Override Thread Affinity & Jump
-        }
-
-        private void UpdateProcessAffinityUbiHE(byte Mask)
-        {
-            Helpers.Instance.WriteToFile(GlobalStream, 0x458BAB, [0xE9, 0x9F, 0x00, 0x00, 0x00, 0x90, 0x55, 0x8B, 0xEC, 
-                0x68, 0x58, 0x03, 0x13, 0x01, 0xFF, 0x15, 0xF8, 0x11, 0x05, 0x01, 0x68, 0xD0, 0x3A, 0x13, 0x01, 0x50, 
-                0xFF, 0x15, 0x94, 0x11, 0x05, 0x01, 0x85, 0xC0, 0x74, 0x0D, 0x89, 0xC3, 0x6A, Mask, 0xFF, 0x15, 0x94, 
-                0x10, 0x05, 0x01, 0x50, 0xFF, 0xD3, 0x8B, 0xE5, 0x5D, 0x31, 0xC0, 0xC3, 0x90]); 
-            // Create new function to set process affinity
-
-            Helpers.Instance.WriteToFile(GlobalStream, 0xD31AD0, [0x53, 0x65, 0x74, 0x50, 0x72, 0x6F, 0x63, 0x65, 0x73, 
-                0x73, 0x41, 0x66, 0x66, 0x69, 0x6E, 0x69, 0x74, 0x79, 0x4D, 0x61, 0x73, 0x6B, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                0x00, 0x00, 0x00, 0x00, 0x00]); // Update function name
-
-            Helpers.Instance.WriteToFile(GlobalStream, 0xAC6505, [0xE8, 0xA7, 0x26, 0x99, 0xFF, 0xEB, 0x17, 
-                0x90, 0x90, 0x90]); // Override Thread Affinity & Jump
+            return false;
         }
     }
 }

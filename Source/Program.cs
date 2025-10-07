@@ -50,7 +50,12 @@ namespace S7Patcher.Source
 
         public static void HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
         {
-            new Patcher(Stream, Variant, Debug).PatchGameWrapper();
+            if (new Patcher(Stream, Variant, Debug).PatchGameWrapper() == false)
+            {
+                Console.WriteLine("ERROR - Patching did not finish successfully!");
+                return;
+            }
+
             new CheckSumCalculator().WritePEHeaderFileCheckSum(Stream);
         }
 
