@@ -14,7 +14,7 @@ namespace S7Patcher.Source
 
         public BinaryParser(Stream BinaryStream)
         {
-            if (BinaryStream == null || BinaryStream.CanRead == false || BinaryStream.CanWrite == false)
+            if (BinaryStream == null || BinaryStream.CanRead == false)
             {
                 throw new Exception("ERROR: Invalid binary stream.");
             }

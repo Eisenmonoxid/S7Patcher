@@ -30,6 +30,7 @@ namespace S7Patcher.Source
 
             if (Mapping.TryGetValue(GlobalID, out byte Value) == false)
             {
+                Parser.Dispose();
                 return false;
             }
 
@@ -55,12 +56,13 @@ namespace S7Patcher.Source
             }
 
             bool Error = WriteMapping(ID);
+            bool DBGError = true;
             if (GlobalDebug)
             {
-                WriteMapping(ID, "DBG");
+                DBGError = WriteMapping(ID, "DBG");
             }
 
-            return Error;
+            return Error && DBGError;
         }
         
         private bool WriteMapping(byte ID, string Block = "")
@@ -135,10 +137,10 @@ namespace S7Patcher.Source
                 switch (GlobalID)
                 {
                     case GameVariant.ORIGINAL:
-                        Position = 0x62F030;
+                        Position = 0x62F0D2;
                         break;
                     case GameVariant.HE_STEAM:
-                        Position = 0x45899F;
+                        Position = 0x4589A1;
                         break;
                     case GameVariant.HE_UBI:
                         Position = 0x458BD1;
