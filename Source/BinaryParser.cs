@@ -14,11 +14,17 @@ namespace S7Patcher.Source
 
         public BinaryParser(Stream BinaryStream)
         {
+            if (BinaryStream == null || BinaryStream.CanRead == false || BinaryStream.CanWrite == false)
+            {
+                throw new Exception("ERROR: Invalid binary stream.");
+            }
+
             BlockOffset = (uint)(Magic.Length + sizeof(byte));
             GlobalReader = new BinaryReader(BinaryStream);
-            if (!IsValidBinaryFile(GlobalReader))
+
+            if (!IsValidBinaryFile())
             {
-                throw new Exception("Invalid binary file.");
+                throw new Exception("ERROR: Invalid binary file.");
             }
         }
 
@@ -28,16 +34,17 @@ namespace S7Patcher.Source
             GlobalReader?.Dispose();
         }
 
-        private bool IsValidBinaryFile(BinaryReader Reader)
+        private bool IsValidBinaryFile()
         {
             byte[] Result = new byte[Magic.Length];
-            Reader.Read(Result, 0, Result.Length);
+            GlobalReader.BaseStream.Seek(0, SeekOrigin.Begin);
+            GlobalReader.Read(Result, 0, Result.Length);
             return Result.SequenceEqual(Magic);
         }
 
         public byte GetFileVersion()
         {
-            GlobalReader.BaseStream.Position = Magic.Length; // TODO: Not able to update Binary without updating executable
+            GlobalReader.BaseStream.Position = Magic.Length;
             return GlobalReader.ReadByte();
         }
 

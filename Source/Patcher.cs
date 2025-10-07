@@ -18,11 +18,9 @@ namespace S7Patcher.Source
 
         public bool PatchGameWrapper()
         {
-            Stream BinaryStream;
             try
             {
-                BinaryStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Source.PatchData.bin");
-                Parser = new(BinaryStream);
+                Parser = new(Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Source.PatchData.bin"));
             }
             catch (Exception ex)
             {
@@ -35,31 +33,31 @@ namespace S7Patcher.Source
                 return false;
             }
 
-            bool Error = PatchGame(Value);
+            bool PatchError = PatchGame(Value);
             if (GlobalID == GameVariant.ORIGINAL)
             {
                 UpdateConfigurationFile("Profiles.xml");
             }
 
             UpdateConfigurationFile("Options.ini");
-            Error = UpdateProcessAffinity(Value);
+            bool AffinityError = UpdateProcessAffinity(Value);
 
             Parser.Dispose();
-            return Error;
+            return PatchError && AffinityError;
         }
 
         private bool PatchGame(byte ID)
         {
             if (Parser.GetFileVersion() != Version)
             {
-                Console.WriteLine("Error: Binary Data Version Mismatch! Aborting ...");
+                Console.WriteLine("ERROR: Binary Data Version Mismatch! Aborting ...");
                 return false;
             }
 
             bool Error = WriteMapping(ID);
             if (GlobalDebug)
             {
-                Error = WriteMapping(ID, "DBG");
+                WriteMapping(ID, "DBG");
             }
 
             return Error;
@@ -69,7 +67,7 @@ namespace S7Patcher.Source
         {
             if (Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block) == false)
             {
-                Console.WriteLine("Error: Could not parse binary data! Aborting ...");
+                Console.WriteLine("ERROR: Could not parse binary data! Aborting ...");
                 return false;
             }
 
@@ -107,7 +105,7 @@ namespace S7Patcher.Source
                 while (true);
             }
 
-            Console.WriteLine("Going to patch file: " + Filepath);
+            Console.WriteLine("INFO: Going to patch file: " + Filepath);
             if (Name == "Profiles.xml")
             {
                 Helpers.Instance.UpdateProfileXML(Filepath);
@@ -124,12 +122,12 @@ namespace S7Patcher.Source
             int Input = Console.Read();
             if (Input != '0')
             {
-                Console.WriteLine("Skipping Affinity ...");
+                Console.WriteLine("INFO: Skipping Affinity ...");
                 return false;
             }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
-            Console.WriteLine("Going to patch Affinity with value: 0x" + $"{Mask:X}");
+            Console.WriteLine("INFO: Going to patch Affinity with value: 0x" + $"{Mask:X}");
 
             if (WriteMapping(ID, "AFF"))
             {

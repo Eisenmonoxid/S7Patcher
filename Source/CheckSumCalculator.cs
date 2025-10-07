@@ -11,6 +11,7 @@ namespace S7Patcher.Source
         [DllImport("imagehlp.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         private static extern int CheckSumMappedFile(SafeMemoryMappedViewHandle BaseAddress, uint FileLength, 
             ref uint HeaderSum, ref uint CheckSum);
+
         private uint UpdatePEHeaderFileCheckSum(string Path, long Size)
         {
             // This will only work on Windows
@@ -20,32 +21,30 @@ namespace S7Patcher.Source
             using MemoryMappedFile Mapping = MemoryMappedFile.CreateFromFile(Path);
             using MemoryMappedViewAccessor View = Mapping.CreateViewAccessor();
 
-            CheckSumMappedFile(View.SafeMemoryMappedViewHandle, (uint)Size, ref HeaderSum, ref CheckSum); 
+            int Result = CheckSumMappedFile(View.SafeMemoryMappedViewHandle, (uint)Size, ref HeaderSum, ref CheckSum); 
+            if (Result == 0x0)
+            {
+                Console.WriteLine("ERROR: CheckSumMappedFile failed with error code: " + Result);
+                return 0x0;
+            }
 
-            Console.WriteLine("Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
+            Console.WriteLine("INFO: Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
             return CheckSum;
         }
 
-        public void WritePEHeaderFileCheckSum(FileStream Stream)
+        public bool WritePEHeaderFileCheckSum(string Path, long Size)
         {
-            string Path = Stream.Name;
-            long Size = Stream.Length;
-
-            Helpers.Instance.CloseFileStream(Stream);
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == false)
-            {
-                return;
-            }
-
             uint CheckSum = UpdatePEHeaderFileCheckSum(Path, Size);
             FileStream CurrentStream = Helpers.Instance.OpenFileStream(Path);
-            if (CurrentStream == null)
+            if (CurrentStream == null || CheckSum == 0x0)
             {
-                return;
+                return false;
             }
 
             Helpers.Instance.WriteToFile(CurrentStream, 0x168, BitConverter.GetBytes(CheckSum));
             Helpers.Instance.CloseFileStream(CurrentStream);
+
+            return true;
         }
     }
 }

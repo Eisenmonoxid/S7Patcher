@@ -22,7 +22,7 @@ namespace S7Patcher.Source
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
-            Console.Title = "S7Patcher - \"github.com/Eisenmonoxid/S7Patcher\"";
+            Console.Title = "S7Patcher - github.com/Eisenmonoxid/S7Patcher";
             Console.Clear();
 
             string Version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
@@ -38,9 +38,9 @@ namespace S7Patcher.Source
                 return;
             }
 
-            HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG); // Main patching routine
+            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG); // Main patching routine
 
-            Console.WriteLine("\nFinished!");
+            Console.WriteLine("\nFinished!" + (!Result ? " One or more errors occured!" : ""));
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();
@@ -48,15 +48,31 @@ namespace S7Patcher.Source
             return;
         }
 
-        public static void HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
+        public static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
         {
             if (new Patcher(Stream, Variant, Debug).PatchGameWrapper() == false)
             {
-                Console.WriteLine("ERROR - Patching did not finish successfully!");
-                return;
+                Console.WriteLine("ERROR: Patching did not finish successfully! Aborting ...");
+                return false;
             }
 
-            new CheckSumCalculator().WritePEHeaderFileCheckSum(Stream);
+            string Path = Stream.Name;
+            long Size = Stream.Length;
+            Helpers.Instance.CloseFileStream(Stream);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == false)
+            {
+                Console.WriteLine("INFO: Non - Windows platform, skipping CheckSum calculation.");
+                return true;
+            }
+
+            if (new CheckSumCalculator().WritePEHeaderFileCheckSum(Path, Size) == false)
+            {
+                Console.WriteLine("ERROR: Could not update PE Header CheckSum!");
+                return false;
+            }
+
+            return true;
         }
 
         public static FileStream GetFileStream(string[] args)
@@ -72,26 +88,26 @@ namespace S7Patcher.Source
 
             if (File.Exists(Filepath) == false)
             {
-                Console.WriteLine("ERROR - File does not exist!");
+                Console.WriteLine("ERROR: File does not exist!");
                 return null;
             }
 
             if (Helpers.Instance.CreateBackup(Filepath) == false)
             {
-                Console.WriteLine("ERROR - Could not create backup of file! Aborting ...");
+                Console.WriteLine("ERROR: Could not create backup of file! Aborting ...");
                 return null;
             }
 
             Stream = Helpers.Instance.OpenFileStream(Filepath);
             if (Stream == null)
             {
-                Console.WriteLine("ERROR - Could not open FileStream! Aborting ...");
+                Console.WriteLine("ERROR: Could not open FileStream! Aborting ...");
                 return null;
             }
 
             if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()) == true)
             {
-                Console.WriteLine("Launcher found! Redirecting Filepath!");
+                Console.WriteLine("INFO: Launcher found! Redirecting Filepath!");
                 Helpers.Instance.CloseFileStream(Stream);
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
             }
@@ -99,12 +115,12 @@ namespace S7Patcher.Source
             Variant = Helpers.Instance.GetExecutableVariant(Stream);
             if (Variant != null)
             {
-                Console.WriteLine("Found Game Variant " + Variant.ToString() + ". \nGoing to patch file: " + Filepath);
+                Console.WriteLine("INFO: Found Game Variant " + Variant.ToString() + ". \nGoing to patch file: " + Filepath);
                 return Stream;
             }
             else
             {
-                Console.WriteLine("ERROR - Executable was not valid! Aborting ...");
+                Console.WriteLine("ERROR: Executable was not valid! Aborting ...");
                 Helpers.Instance.CloseFileStream(Stream);
                 return null;
             }
