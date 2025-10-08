@@ -40,7 +40,7 @@ namespace S7Patcher.Source
 
             bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG); // Main patching routine
 
-            Console.WriteLine("\nFinished!" + (!Result ? " One or more errors occured!" : ""));
+            Console.WriteLine("\nFinished!" + (!Result ? " One or more errors occured." : " No errors occured."));
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();

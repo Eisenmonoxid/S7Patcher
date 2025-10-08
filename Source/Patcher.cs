@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace S7Patcher.Source
@@ -9,18 +10,26 @@ namespace S7Patcher.Source
     {
         private const byte Version = 0x1;
         private BinaryParser Parser;
+
         private readonly Dictionary<GameVariant, byte> Mapping = new()
         {
             {GameVariant.ORIGINAL, 0x0},
             {GameVariant.HE_STEAM, 0x1},
-            {GameVariant.HE_UBI, 0x2}
+            {GameVariant.HE_UBI,   0x2}
         };
+
+        private readonly Tuple<GameVariant, UInt32>[] Affinities =
+        [
+            new(GameVariant.ORIGINAL, 0x62F0D2),
+            new(GameVariant.HE_STEAM, 0x4589A1),
+            new(GameVariant.HE_UBI,   0x458BD1)
+        ];
 
         public bool PatchGameWrapper()
         {
             try
             {
-                Parser = new(Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Source.PatchData.bin"));
+                Parser = new(Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Source.Definitions.bin"));
             }
             catch (Exception ex)
             {
@@ -125,7 +134,7 @@ namespace S7Patcher.Source
             if (Input != '0')
             {
                 Console.WriteLine("INFO: Skipping Affinity ...");
-                return false;
+                return true;
             }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
@@ -133,23 +142,7 @@ namespace S7Patcher.Source
 
             if (WriteMapping(ID, "AFF"))
             {
-                long Position;
-                switch (GlobalID)
-                {
-                    case GameVariant.ORIGINAL:
-                        Position = 0x62F0D2;
-                        break;
-                    case GameVariant.HE_STEAM:
-                        Position = 0x4589A1;
-                        break;
-                    case GameVariant.HE_UBI:
-                        Position = 0x458BD1;
-                        break;
-                    default:
-                        return false;
-                }
-
-                Helpers.Instance.WriteToFile(GlobalStream, Position, [Mask]);
+                Helpers.Instance.WriteToFile(GlobalStream, Affinities.FirstOrDefault(Element => Element.Item1 == GlobalID).Item2, [Mask]);
                 return true;
             }
 

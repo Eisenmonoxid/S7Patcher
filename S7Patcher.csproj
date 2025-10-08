@@ -56,6 +56,6 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <EmbeddedResource Include="Source\PatchData.bin" />
+    <EmbeddedResource Include="Source\Definitions.bin" />
   </ItemGroup>
 </Project>
