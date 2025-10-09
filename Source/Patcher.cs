@@ -25,14 +25,17 @@ namespace S7Patcher.Source
             new(GameVariant.HE_UBI,   0x458BD1)
         ];
 
-        public bool PatchGameWrapper()
+        public bool PatchGameWrapper(Stream BinaryStream)
         {
             try
             {
-                Parser = new(Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Source.Definitions.bin"));
+                Parser = new(BinaryStream);
             }
             catch (Exception ex)
             {
+                BinaryStream.Close();
+                BinaryStream.Dispose();
+
                 Console.WriteLine(ex.ToString());
                 return false;
             }

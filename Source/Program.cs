@@ -38,19 +38,47 @@ namespace S7Patcher.Source
                 return;
             }
 
-            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG); // Main patching routine
+            Stream Definition;
+            try
+            {
+                Definition = OpenDefinitionStream();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Console.ReadKey();
+                return;
+            }
+
+            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, Definition); // Main patching routine
 
             Console.WriteLine("\nFinished!" + (!Result ? " One or more errors occured." : " No errors occured."));
             Console.WriteLine("If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();
-
             return;
         }
 
-        public static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug)
+        private static Stream OpenDefinitionStream()
         {
-            if (new Patcher(Stream, Variant, Debug).PatchGameWrapper() == false)
+            string Error = "ERROR: Failed to get Definition binary file! Aborting ...";
+            Stream Definition;
+
+            if (AskForDefinitionFile()) // Download from Repository
+            {
+                Definition = WebHandler.Instance.DownloadDefinitionsFile().GetAwaiter().GetResult() ?? throw new Exception(Error);
+            }
+            else
+            {
+                Definition = Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin") ?? throw new Exception(Error);
+            }
+
+            return Definition;
+        }
+
+        private static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug, Stream Definition)
+        {
+            if (new Patcher(Stream, Variant, Debug).PatchGameWrapper(Definition) == false)
             {
                 Console.WriteLine("ERROR: Patching did not finish successfully! Aborting ...");
                 return false;
@@ -75,7 +103,21 @@ namespace S7Patcher.Source
             return true;
         }
 
-        public static FileStream GetFileStream(string[] args)
+        private static bool AskForDefinitionFile()
+        {
+            Console.WriteLine("QUESTION: Download latest Definition file from the GitHub repository (Yes) or use local embedded resource (No)?\n(0 = Yes/1 = No):");
+            int Input = Console.Read();
+            if (Input != '0')
+            {
+                Console.WriteLine("INFO: Using embedded resource Definitions.");
+                return false;
+            }
+
+            Console.WriteLine("INFO: Downloading latest Definition file.");
+            return true;
+        }
+
+        private static FileStream GetFileStream(string[] args)
         {
             FileStream Stream;
             string Filepath = args.Where(Element => Element.EndsWith(".exe")).FirstOrDefault();
