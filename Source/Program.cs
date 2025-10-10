@@ -66,11 +66,13 @@ namespace S7Patcher.Source
 
             if (AskForDefinitionFile()) // Download from Repository
             {
-                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? throw new Exception(Error);
+                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() 
+                    ?? throw new Exception(Error);
             }
             else
             {
-                Definition = Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin") ?? throw new Exception(Error);
+                Definition = Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin") 
+                    ?? throw new Exception(Error);
             }
 
             return Definition;

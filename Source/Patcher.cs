@@ -118,7 +118,7 @@ namespace S7Patcher.Source
                 while (true);
             }
 
-            Console.WriteLine("\n[INFO] Going to patch file: " + Filepath);
+            Console.WriteLine("[INFO] Going to patch file: " + Filepath);
             if (Name == "Profiles.xml")
             {
                 Helpers.Instance.UpdateProfileXML(Filepath);
