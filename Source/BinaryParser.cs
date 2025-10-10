@@ -16,7 +16,7 @@ namespace S7Patcher.Source
         {
             if (BinaryStream == null || BinaryStream.CanRead == false)
             {
-                throw new Exception("ERROR: Invalid binary stream.");
+                throw new Exception("[ERROR] Invalid binary stream.");
             }
 
             BlockOffset = (uint)(Magic.Length + sizeof(byte));
@@ -24,7 +24,7 @@ namespace S7Patcher.Source
 
             if (!IsValidBinaryFile())
             {
-                throw new Exception("ERROR: Invalid binary file.");
+                throw new Exception("[ERROR] Invalid binary file.");
             }
         }
 
@@ -77,8 +77,7 @@ namespace S7Patcher.Source
                 byte[] EntryID = GlobalReader.ReadBytes(IDBytes.Length);
                 if (EntryID.SequenceEqual(IDBytes) == false)
                 {
-                    GlobalReader.BaseStream.Position += sizeof(UInt32);
-                    GlobalReader.ReadBytes(GlobalReader.ReadUInt16());
+                    GlobalReader.BaseStream.Position += sizeof(UInt32) + GlobalReader.ReadUInt16() - sizeof(UInt16);
                     continue;
                 }
 

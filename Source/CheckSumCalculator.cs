@@ -12,7 +12,7 @@ namespace S7Patcher.Source
         private static extern int CheckSumMappedFile(SafeMemoryMappedViewHandle BaseAddress, uint FileLength, 
             ref uint HeaderSum, ref uint CheckSum);
 
-        private uint UpdatePEHeaderFileCheckSum(string Path, long Size)
+        private uint? UpdatePEHeaderFileCheckSum(string Path, long Size)
         {
             // This will only work on Windows
             uint CheckSum = 0x0;
@@ -24,24 +24,29 @@ namespace S7Patcher.Source
             int Result = CheckSumMappedFile(View.SafeMemoryMappedViewHandle, (uint)Size, ref HeaderSum, ref CheckSum); 
             if (Result == 0x0)
             {
-                Console.WriteLine("ERROR: CheckSumMappedFile failed with error code: " + Result);
-                return 0x0;
+                Console.WriteLine("[ERROR] CheckSumMappedFile failed with error code: " + Result);
+                return null;
             }
 
-            Console.WriteLine("INFO: Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
+            Console.WriteLine("[INFO] Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
             return CheckSum;
         }
 
         public bool WritePEHeaderFileCheckSum(string Path, long Size)
         {
-            uint CheckSum = UpdatePEHeaderFileCheckSum(Path, Size);
-            FileStream CurrentStream = Helpers.Instance.OpenFileStream(Path);
-            if (CurrentStream == null || CheckSum == 0x0)
+            uint? CheckSum = UpdatePEHeaderFileCheckSum(Path, Size);
+            if (CheckSum == null)
             {
                 return false;
             }
 
-            Helpers.Instance.WriteToFile(CurrentStream, 0x168, BitConverter.GetBytes(CheckSum));
+            FileStream CurrentStream = Helpers.Instance.OpenFileStream(Path);
+            if (CurrentStream == null)
+            {
+                return false;
+            }
+
+            Helpers.Instance.WriteToFile(CurrentStream, 0x168, BitConverter.GetBytes((uint)CheckSum));
             Helpers.Instance.CloseFileStream(CurrentStream);
 
             return true;

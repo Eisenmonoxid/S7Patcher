@@ -103,5 +103,11 @@ namespace S7Patcher.Properties {
                 return ResourceManager.GetString("Options", resourceCulture);
             }
         }
+
+        internal static string DefinitionLink {
+            get {
+                return ResourceManager.GetString("DefinitionLink", resourceCulture);
+            }
+        }
     }
 }

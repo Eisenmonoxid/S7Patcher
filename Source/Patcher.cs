@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace S7Patcher.Source
 {
@@ -63,7 +62,7 @@ namespace S7Patcher.Source
         {
             if (Parser.GetFileVersion() != Version)
             {
-                Console.WriteLine("ERROR: Binary Data Version Mismatch! Aborting ...");
+                Console.WriteLine("[ERROR] Binary Data Version Mismatch! Aborting ...");
                 return false;
             }
 
@@ -81,7 +80,7 @@ namespace S7Patcher.Source
         {
             if (Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block) == false)
             {
-                Console.WriteLine("ERROR: Could not parse binary data! Aborting ...");
+                Console.WriteLine("[ERROR] Could not parse binary data! Aborting ...");
                 return false;
             }
 
@@ -102,13 +101,13 @@ namespace S7Patcher.Source
             {
                 do
                 {
-                    Console.WriteLine("\n" + Filepath + " not found!\nPlease input the path to " +
+                    Console.WriteLine("\n[ERROR] " + Filepath + " not found!\n[INPUT] Please input the path to " +
                         "the " + Name + " file:\n(Input skip to skip file patching)");
                     Filepath = Console.ReadLine();
 
                     if (Filepath == "skip")
                     {
-                        Console.WriteLine("Skipping file patching ...");
+                        Console.WriteLine("\n[INFO] Skipping file patching ...");
                         return;
                     }
                     else if (File.Exists(Filepath))
@@ -119,7 +118,7 @@ namespace S7Patcher.Source
                 while (true);
             }
 
-            Console.WriteLine("INFO: Going to patch file: " + Filepath);
+            Console.WriteLine("\n[INFO] Going to patch file: " + Filepath);
             if (Name == "Profiles.xml")
             {
                 Helpers.Instance.UpdateProfileXML(Filepath);
@@ -132,16 +131,16 @@ namespace S7Patcher.Source
 
         private bool UpdateProcessAffinity(byte ID)
         {
-            Console.WriteLine("\nUpdate Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
-            int Input = Console.Read();
+            Console.WriteLine("\n[INPUT] Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
+            int Input = Helpers.Instance.ConsoleReadWrapper();
             if (Input != '0')
             {
-                Console.WriteLine("INFO: Skipping Affinity ...");
+                Console.WriteLine("\n[INFO] Skipping Affinity ...");
                 return true;
             }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
-            Console.WriteLine("INFO: Going to patch Affinity with value: 0x" + $"{Mask:X}");
+            Console.WriteLine("\n[INFO] Going to patch Affinity with value: 0x" + $"{Mask:X}");
 
             if (WriteMapping(ID, "AFF"))
             {

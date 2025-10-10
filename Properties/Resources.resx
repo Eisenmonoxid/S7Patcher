@@ -120,6 +120,9 @@
   <data name="Branch" xml:space="preserve">
     <value>    &lt;ChoosenBranch&gt;28&lt;/ChoosenBranch&gt;</value>
   </data>
+  <data name="DefinitionLink" xml:space="preserve">
+    <value>https://github.com/Eisenmonoxid/S7Patcher/raw/refs/heads/main/Definitions/Definitions.bin</value>
+  </data>
   <data name="Options" xml:space="preserve">
     <value>
 [System]
