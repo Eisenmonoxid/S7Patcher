@@ -89,17 +89,19 @@ namespace S7Patcher.Source
             UInt32 BlockSize = GlobalReader.ReadUInt32();
             long Position = GlobalReader.BaseStream.Position;
 
+            UInt32 Address;
+            byte[] Data;
+            byte[] EntryID;
             while ((Position + BlockSize) > GlobalReader.BaseStream.Position)
             {
-                // Next three bytes are ID or zero
-                byte[] EntryID = GlobalReader.ReadBytes(IDBytes.Length);
-                if (EntryID.SequenceEqual(IDBytes) == false)
-                {
-                    GlobalReader.BaseStream.Position += sizeof(UInt32) + GlobalReader.ReadUInt16() - sizeof(UInt16);
-                    continue;
-                }
+                EntryID = GlobalReader.ReadBytes(IDBytes.Length);
+                Address = GlobalReader.ReadUInt32();
+                Data = GlobalReader.ReadBytes(GlobalReader.ReadUInt16());
 
-                Result.Add(GlobalReader.ReadUInt32(), GlobalReader.ReadBytes(GlobalReader.ReadUInt16()));
+                if (EntryID.SequenceEqual(IDBytes))
+                {
+                    Result.Add(Address, Data);
+                }
             }
 
             return true;
