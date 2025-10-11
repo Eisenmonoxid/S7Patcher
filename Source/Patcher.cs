@@ -20,8 +20,8 @@ namespace S7Patcher.Source
         private readonly Tuple<GameVariant, UInt32>[] Affinities =
         [
             new(GameVariant.ORIGINAL, 0x62F0D2),
-            new(GameVariant.HE_STEAM, 0x4589A1),
-            new(GameVariant.HE_UBI,   0x458BD1)
+            new(GameVariant.HE_STEAM, 0x4589A2),
+            new(GameVariant.HE_UBI,   0x458BD2)
         ];
 
         public bool PatchGameWrapper(Stream BinaryStream)
