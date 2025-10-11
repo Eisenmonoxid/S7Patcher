@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
 namespace S7Patcher.Source
@@ -33,7 +34,8 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("\n[INFO] Download failed! Falling back to embedded file.");
                 return null;
             }
 

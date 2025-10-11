@@ -253,7 +253,7 @@ namespace S7Patcher.Source
         public int ConsoleReadWrapper()
         {
             int Value = Console.Read();
-            if (Value == 13 || Value == 10)
+            if (Value == 13 || Value == 10) // CR LF
             {
                 return ConsoleReadWrapper();
             }

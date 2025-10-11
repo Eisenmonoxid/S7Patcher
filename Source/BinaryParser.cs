@@ -35,6 +35,8 @@ namespace S7Patcher.Source
 
         private MemoryStream GetDecompressedStream(Stream BinaryStream)
         {
+            BinaryStream.Seek(0, SeekOrigin.Begin);
+
             using GZipStream DecompressionStream = new(BinaryStream, CompressionMode.Decompress);
             MemoryStream DecompressedStream = new();
 

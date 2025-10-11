@@ -38,19 +38,9 @@ namespace S7Patcher.Source
                 return;
             }
 
-            Stream Definition;
-            try
-            {
-                Definition = OpenDefinitionStream();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                Console.ReadKey();
-                return;
-            }
-
-            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, Definition); // Main patching routine
+            // Main patching routine
+            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, OpenDefinitionStream());
+            // Main patching routine
 
             Console.WriteLine("\n[INFO] Finished!" + (!Result ? " One or more errors occured." : " No errors occured."));
             Console.WriteLine("[INFO] If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
@@ -61,27 +51,26 @@ namespace S7Patcher.Source
 
         private static Stream OpenDefinitionStream()
         {
-            string Error = "[ERROR] Failed to get Definition binary file! Aborting ...";
             Stream Definition;
-
-            if (AskForDefinitionFile()) // Download from Repository
+            if (AskForDefinitionFile())
             {
-                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() 
-                    ?? throw new Exception(Error);
+                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? GetEmbeddedResourceDefinition();
             }
             else
             {
-                Definition = Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin") 
-                    ?? throw new Exception(Error);
+                Definition = GetEmbeddedResourceDefinition();
             }
 
             return Definition;
         }
 
+        private static Stream GetEmbeddedResourceDefinition() => Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin");
+
         private static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug, Stream Definition)
         {
             if (new Patcher(Stream, Variant, Debug).PatchGameWrapper(Definition) == false)
             {
+                Helpers.Instance.CloseFileStream(Stream);
                 Console.WriteLine("[ERROR] Patching did not finish successfully! Aborting ...");
                 return false;
             }
