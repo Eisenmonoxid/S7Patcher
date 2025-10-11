@@ -32,9 +32,6 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                BinaryStream.Close();
-                BinaryStream.Dispose();
-
                 Console.WriteLine(ex.ToString());
                 return false;
             }

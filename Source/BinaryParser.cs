@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -20,12 +21,27 @@ namespace S7Patcher.Source
             }
 
             BlockOffset = (uint)(Magic.Length + sizeof(byte));
-            GlobalReader = new BinaryReader(BinaryStream);
+            GlobalReader = new BinaryReader(GetDecompressedStream(BinaryStream));
+
+            BinaryStream.Close();
+            BinaryStream.Dispose();
 
             if (!IsValidBinaryFile())
             {
+                Dispose();
                 throw new Exception("[ERROR] Invalid binary file.");
             }
+        }
+
+        private MemoryStream GetDecompressedStream(Stream BinaryStream)
+        {
+            using GZipStream DecompressionStream = new(BinaryStream, CompressionMode.Decompress);
+            MemoryStream DecompressedStream = new();
+
+            DecompressionStream.CopyTo(DecompressedStream);
+            DecompressedStream.Seek(0, SeekOrigin.Begin);
+
+            return DecompressedStream;
         }
 
         public void Dispose()
