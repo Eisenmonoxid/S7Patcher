@@ -46,13 +46,13 @@ namespace S7Patcher.Source
                 return false;
             }
 
-            WritePEHeaderFileCheckSum(CurrentStream, BitConverter.GetBytes((uint)CheckSum));
+            bool Result = WritePEHeaderFileCheckSum(CurrentStream, BitConverter.GetBytes((uint)CheckSum));
             Helpers.Instance.CloseFileStream(CurrentStream);
 
-            return true;
+            return Result;
         }
 
-        private void WritePEHeaderFileCheckSum(FileStream Stream, byte[] CheckSum)
+        private bool WritePEHeaderFileCheckSum(FileStream Stream, byte[] CheckSum)
         {
             BinaryReader Reader = new(Stream);
 
@@ -62,11 +62,13 @@ namespace S7Patcher.Source
             if (Reader.ReadInt32() != 0x4550)
             {
                 Console.WriteLine("[ERROR] CheckSum offset not found! Skipping ...");
-                return;
+                return false;
             }
 
             Reader.BaseStream.Position += 0x54;
             Helpers.Instance.WriteToFile(Stream, Reader.BaseStream.Position, CheckSum);
+
+            return true;
         }
     }
 }
