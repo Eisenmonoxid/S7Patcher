@@ -75,13 +75,13 @@ namespace S7Patcher.Source
         
         private bool WriteMapping(byte ID, string Block = "")
         {
-            if (!Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block))
+            if (!Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> Mapping, Block))
             {
                 Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, "Could not parse binary data! Aborting ...");
                 return false;
             }
 
-            foreach (var Entry in PatchMapping)
+            foreach (var Entry in Mapping)
             {
                 Helpers.Instance.WriteToFile(GlobalStream, Entry.Key, Entry.Value);
             }
