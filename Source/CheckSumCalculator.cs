@@ -24,11 +24,11 @@ namespace S7Patcher.Source
             int Result = CheckSumMappedFile(View.SafeMemoryMappedViewHandle, (uint)Size, ref HeaderSum, ref CheckSum); 
             if (Result == 0x0)
             {
-                Console.WriteLine("[ERROR] CheckSumMappedFile failed with error code: " + Result);
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, "CheckSumMappedFile failed with error code: " + Result);
                 return null;
             }
 
-            Console.WriteLine("[INFO] Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
+            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
             return CheckSum;
         }
 
@@ -61,7 +61,7 @@ namespace S7Patcher.Source
 
             if (Reader.ReadInt32() != 0x4550)
             {
-                Console.WriteLine("[ERROR] CheckSum offset not found! Skipping ...");
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, "CheckSum offset not found! Skipping ...");
                 return false;
             }
 

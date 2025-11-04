@@ -12,8 +12,8 @@ namespace S7Patcher.Source
         private WebHandler() {}
         public void Dispose() {GlobalClient.Dispose();}
         public static WebHandler Instance {get;} = new();
-        private static readonly Uri DefinitionURI = new(Resources.DefinitionLink);
-        private static readonly HttpClient GlobalClient = new()
+        private readonly Uri DefinitionURI = new(Resources.DefinitionLink);
+        private readonly HttpClient GlobalClient = new()
         {
             Timeout = TimeSpan.FromMilliseconds(8000),
             DefaultRequestHeaders = {{"User-Agent", "Other"}},
@@ -33,13 +33,14 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("\n[INFO] Download failed! Falling back to embedded file.");
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, "Download failed! Falling back to embedded file.\n");
                 return null;
             }
 
             Watch.Stop();
-            Console.WriteLine($"[INFO] Download Finished. Downloaded {Memory.Length / (float)1024} KB in {Watch.Elapsed.TotalSeconds} seconds.");
+            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, $"Download Finished. Downloaded {Memory.Length / (float)1024} KB " +
+                $"in {Watch.Elapsed.TotalSeconds} seconds.\n");
             return Memory;
         }
     }

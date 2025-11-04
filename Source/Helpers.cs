@@ -14,10 +14,18 @@ namespace S7Patcher.Source
         private Helpers() {}
         public static Helpers Instance {get;} = new();
 
+        private readonly Dictionary<ConsoleColorType, string> OutputMapping = new()
+        {
+            {ConsoleColorType.INFO,     "[INFO]: "},
+            {ConsoleColorType.ERROR,    "[ERROR]: "},
+            {ConsoleColorType.SUCCESS,  "[SUCCESS]: "},
+            {ConsoleColorType.INPUT,    "[INPUT]: "}
+        };
+
         public bool CreateBackup(string FilePath)
         {
             string FullPath = Path.Combine(Path.GetDirectoryName(FilePath), Path.GetFileNameWithoutExtension(FilePath) + "_BACKUP.exe");
-            if (File.Exists(FullPath) == false)
+            if (!File.Exists(FullPath))
             {
                 try
                 {
@@ -25,7 +33,7 @@ namespace S7Patcher.Source
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
                     return false;
                 }
             }
@@ -42,7 +50,7 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
             }
         }
 
@@ -55,7 +63,7 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
                 return null;
             }
 
@@ -176,8 +184,8 @@ namespace S7Patcher.Source
             // Max 0xFF -> 255
             // ^ The above is wrong, since in x86 assembly a push is SIGN-EXTEND, meaning 7F (127) is the max value. 
             int Cores = Environment.ProcessorCount;
-            Console.WriteLine("\n[INFO] Found " + Cores.ToString() + " processors!");
-            Console.WriteLine("[INPUT] Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
+            ConsoleWriteWrapper(ConsoleColorType.INFO, "Found " + Cores.ToString() + " processors!");
+            ConsoleWriteWrapper(ConsoleColorType.INPUT, "Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
                 "Game should run on core 2 and 3 -> Input: 2,3)");
 
             do
@@ -194,7 +202,7 @@ namespace S7Patcher.Source
                     Mask |= (byte)(1 << Element);
                 }
 
-                Console.WriteLine("\n[INFO] Writing Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".");
+                ConsoleWriteWrapper(ConsoleColorType.INFO, "Writing Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".");
                 return Mask;
             }
             while (true);
@@ -204,21 +212,21 @@ namespace S7Patcher.Source
         {
             if (string.IsNullOrWhiteSpace(Value))
             {
-                Console.WriteLine("Input cannot be empty!");
+                ConsoleWriteWrapper(ConsoleColorType.INFO, "Input cannot be empty!");
                 return null;
             }
 
             string Pattern = @"^[0-7](?:,[0-7])*$";
-            if (Regex.IsMatch(Value, Pattern) == false)
+            if (!Regex.IsMatch(Value, Pattern))
             {
-                Console.WriteLine("[ERROR] Erroneous input value. Please try again!");
+                ConsoleWriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!");
                 return null;
             }
 
             int[] Input = Value.Split(',').Length == 1 ? [int.Parse(Value)] : [.. Value.Split(',').Select(int.Parse)];
             if (Input.Length > 7)
             {
-                Console.WriteLine("[ERROR] Erroneous input value. Please try again!");
+                ConsoleWriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!");
                 return null;
             }
 
@@ -233,7 +241,7 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
                 return null;
             }
         }
@@ -246,8 +254,29 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
             }
+        }
+
+        public void ConsoleWriteWrapper(ConsoleColorType Type, string Text)
+        {
+            Console.ForegroundColor = Type switch
+            {
+                ConsoleColorType.ERROR => ConsoleColor.Red,
+                ConsoleColorType.SUCCESS => ConsoleColor.Green,
+                ConsoleColorType.INFO => ConsoleColor.Yellow,
+                ConsoleColorType.INPUT => ConsoleColor.Cyan,
+                _ => ConsoleColor.White,
+            };
+
+            if (!OutputMapping.TryGetValue(Type, out string Value))
+            {
+                return;
+            }
+
+            Console.Write(Value);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(Text + "\n");
         }
 
         public int ConsoleReadWrapper()

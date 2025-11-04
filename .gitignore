@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /S7Patcher.sln
+.vscode/settings.json
+.vscode/tasks.json
+.gitignore
+.gitignore

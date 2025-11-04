@@ -32,11 +32,11 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, ex.Message);
                 return false;
             }
 
-            if (Mapping.TryGetValue(GlobalID, out byte Value) == false)
+            if (!Mapping.TryGetValue(GlobalID, out byte Value))
             {
                 Parser.Dispose();
                 return false;
@@ -59,7 +59,7 @@ namespace S7Patcher.Source
         {
             if (Parser.GetFileVersion() != Version)
             {
-                Console.WriteLine("[ERROR] Binary Data Version Mismatch! Aborting ...");
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, "Binary Data Version Mismatch! Aborting ...");
                 return false;
             }
 
@@ -75,9 +75,9 @@ namespace S7Patcher.Source
         
         private bool WriteMapping(byte ID, string Block = "")
         {
-            if (Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block) == false)
+            if (!Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block))
             {
-                Console.WriteLine("[ERROR] Could not parse binary data! Aborting ...");
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, "Could not parse binary data! Aborting ...");
                 return false;
             }
 
@@ -94,17 +94,19 @@ namespace S7Patcher.Source
             string Folder = (GlobalID == GameVariant.ORIGINAL) ? "Settlers7" : "THE SETTLERS 7 - History Edition";
             string Filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Folder, Name);
 
-            if (File.Exists(Filepath) == false)
+            if (!File.Exists(Filepath))
             {
                 do
                 {
-                    Console.WriteLine("\n[ERROR] " + Filepath + " not found!\n[INPUT] Please input the path to " +
+                    Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.ERROR, Filepath + " not found!");
+                    Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INPUT, "Please input the path to " +
                         "the " + Name + " file:\n(Input skip to skip file patching)");
+
                     Filepath = Console.ReadLine();
 
                     if (Filepath == "skip")
                     {
-                        Console.WriteLine("\n[INFO] Skipping file patching ...");
+                        Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Skipping file patching ...");
                         return;
                     }
                     else if (File.Exists(Filepath))
@@ -115,7 +117,7 @@ namespace S7Patcher.Source
                 while (true);
             }
 
-            Console.WriteLine("[INFO] Going to patch file: " + Filepath);
+            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath);
             if (Name == "Profiles.xml")
             {
                 Helpers.Instance.UpdateProfileXML(Filepath);
@@ -128,16 +130,17 @@ namespace S7Patcher.Source
 
         private bool UpdateProcessAffinity(byte ID)
         {
-            Console.WriteLine("\n[INPUT] Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
+            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INPUT, "Update Process Affinity? " +
+                "(Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
             int Input = Helpers.Instance.ConsoleReadWrapper();
             if (Input != '0')
             {
-                Console.WriteLine("\n[INFO] Skipping Affinity ...");
+                Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Skipping Affinity ...\n");
                 return true;
             }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
-            Console.WriteLine("\n[INFO] Going to patch Affinity with value: 0x" + $"{Mask:X}");
+            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Going to patch Affinity with value: 0x" + $"{Mask:X}\n");
 
             if (WriteMapping(ID, "AFF"))
             {
