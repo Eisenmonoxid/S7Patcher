@@ -53,7 +53,17 @@ jobs:
             -p:StripSymbols=true \
             -o ./publish/${{ matrix.runtime }}
 
-      - name: Compress executable
+      # Use platform-specific compression
+      - name: Compress executable (Windows)
+        if: startsWith(matrix.os, 'windows')
+        shell: pwsh
+        run: |
+          $src = "publish/${{ matrix.runtime }}"
+          $dst = "${{ matrix.displayName }}.zip"
+          Compress-Archive -Path "$src\*${{ matrix.ext }}" -DestinationPath $dst -CompressionLevel Optimal
+
+      - name: Compress executable (Unix)
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         shell: bash
         run: |
           cd ./publish/${{ matrix.runtime }}
