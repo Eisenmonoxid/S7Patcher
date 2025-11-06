@@ -31,59 +31,61 @@ namespace S7Patcher.Source
             Console.Title = "S7Patcher - github.com/Eisenmonoxid/S7Patcher";
             Console.Clear();
 
-            string Version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            string Version = Assembly.GetExecutingAssembly()?.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
             Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "S7Patcher v" + Version + " currently " +
                 "running on " + RuntimeInformation.OSDescription.ToString());
 
-            bool USE_DEBUG = args.Where(Element => Element.Contains("-debug")).Any();
-            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "USE_DEBUG - Activated: " + USE_DEBUG.ToString() + "\n");
+            bool USE_DEBUG = args.Any(Element => Element.Contains("-debug"));
+            Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, $"USE_DEBUG - Activated: {USE_DEBUG}\n");
 
             FileStream Stream = GetFileStream(args);
             if (Stream == null)
             {
-                Console.ReadKey();
+                try {Console.ReadKey();} catch {Console.Read();}
                 return;
             }
 
             GameVariant? Variant = GetCurrentVariant(Stream);
             if (Variant == null)
             {
-                Console.ReadKey();
+                try { Console.ReadKey(); } catch { Console.Read(); }
                 return;
             }
 
+            Stream Definition = OpenDefinitionStream();
             // Main patching routine
-            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, OpenDefinitionStream());
+            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, Definition);
             // Main patching routine
 
+            Definition.Dispose();
             WebHandler.Instance.Dispose();
 
             Console.Write("\n");
             Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.SUCCESS, "Finished!" + (!Result ? " One or more errors occured." : " " +
-                "No errors occured."));
+                "No errors occurred."));
             Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.SUCCESS, "If you encounter any errors (or you want to give a thumbs up), " +
                 "please report on GitHub or Discord.");
             Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Press any key to exit ...");
-            Console.ReadKey();
+            try {Console.ReadKey();} catch {Console.Read();}
             return;
         }
 
         private static Stream OpenDefinitionStream()
         {
+            Func<Stream> GetStream = Helpers.Instance.GetEmbeddedResourceDefinition;
             Stream Definition;
+
             if (AskForDefinitionFile())
             {
-                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? GetEmbeddedResourceDefinition();
+                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? GetStream();
             }
             else
             {
-                Definition = GetEmbeddedResourceDefinition();
+                Definition = GetStream();
             }
 
             return Definition;
         }
-
-        private static Stream GetEmbeddedResourceDefinition() => Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin");
 
         private static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug, Stream Definition)
         {
@@ -175,6 +177,7 @@ namespace S7Patcher.Source
                 return null;
             }
 
+            Stream.Seek(0, SeekOrigin.Begin);
             if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()))
             {
                 Helpers.Instance.ConsoleWriteWrapper(ConsoleColorType.INFO, "Launcher found! Redirecting Filepath!");

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,6 +22,8 @@ namespace S7Patcher.Source
             {ConsoleColorType.SUCCESS,  "[SUCCESS]: "},
             {ConsoleColorType.INPUT,    "[INPUT]: "}
         };
+
+        public Stream GetEmbeddedResourceDefinition() => Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin");
 
         public bool CreateBackup(string FilePath)
         {
