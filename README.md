@@ -67,4 +67,4 @@ when working with LUA scripts.
 
 ---
 ## Unpacking Archive Files
-The archive files `.bba` can be packed/unpacked using [this Japanese tool](https://wikiwiki.jp/settlers7/SettlersArchiver%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9). 
+The archive files `.bba` can be packed/unpacked using [the S7Packer](https://github.com/Eisenmonoxid/S7Packer). 
