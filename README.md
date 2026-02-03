@@ -4,7 +4,7 @@ A simple application for the game "The Settlers 7 - Paths to a Kingdom".
 	<img src="https://github.com/Eisenmonoxid/S7Patcher/blob/9ee91e1bbfae1d9420e88e9cd23f59c6088aadbe/Images/S7.jpg" width="60%" height="60%" alt="Header"/>
 </p>
 
-**Should you have any questions: [Settlers Discord Server](https://discord.gg/7SGkQtAAET).**
+**Should there be any questions: [Settlers Discord Server](https://discord.gg/7SGkQtAAET).**
 
 ---
 ## Usage

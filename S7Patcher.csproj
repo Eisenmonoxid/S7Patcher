@@ -1,54 +1,51 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
-    <UseWindowsForms>false</UseWindowsForms>
-    <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-	<DebugType>full</DebugType>
-  </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <CleanBeforeBuild>True</CleanBeforeBuild>
-    <BuiltInComInteropSupport>False</BuiltInComInteropSupport>
-    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
-    <PublishTrimmed>True</PublishTrimmed>
-    <PublishAot>True</PublishAot>
-    <PublishSingleFile>True</PublishSingleFile>
-    <SelfContained>True</SelfContained>
-    <DebugType>none</DebugType>
-    <InvariantGlobalization>True</InvariantGlobalization>
-    <EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
-    <StripSymbols>True</StripSymbols>
-    <DebuggerSupport>False</DebuggerSupport>
-    <EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
-    <EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
-    <MetadataUpdaterSupport>False</MetadataUpdaterSupport>
-    <MetricsSupport>False</MetricsSupport>
-    <XmlResolverIsNetworkingEnabledByDefault>False</XmlResolverIsNetworkingEnabledByDefault>
-  </PropertyGroup>
-	
-  <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+		<CleanBeforeBuild>True</CleanBeforeBuild>
+		<BuiltInComInteropSupport>False</BuiltInComInteropSupport>
+		<IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+		<PublishTrimmed>True</PublishTrimmed>
+		<PublishAot>True</PublishAot>
+		<PublishSingleFile>True</PublishSingleFile>
+		<SelfContained>True</SelfContained>
+		<DebugType>none</DebugType>
+		<InvariantGlobalization>True</InvariantGlobalization>
+		<EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
+		<StripSymbols>True</StripSymbols>
+		<DebuggerSupport>False</DebuggerSupport>
+		<EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
+		<EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
+		<MetadataUpdaterSupport>False</MetadataUpdaterSupport>
+		<MetricsSupport>False</MetricsSupport>
+		<XmlResolverIsNetworkingEnabledByDefault>False</XmlResolverIsNetworkingEnabledByDefault>
+	</PropertyGroup>
+
+	<PropertyGroup>
+    <NoWin32Manifest>True</NoWin32Manifest>
   </PropertyGroup>
 	
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <AssemblyVersion>1.9.0.0</AssemblyVersion>
-    <FileVersion>1.9.0.0</FileVersion>
+    <AssemblyVersion>1.9.1.0</AssemblyVersion>
+    <FileVersion>1.9.1.0</FileVersion>
     <NuGetAudit>False</NuGetAudit>
     <Copyright>Eisenmonoxid</Copyright>
     <Authors>Eisenmonoxid</Authors>
-    <Version>1.9</Version>
-    <PublishTrimmed>True</PublishTrimmed>
+    <Version>1.9.1</Version>
     <Company>Eisenmonoxid</Company>
-    <PublishAot>True</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
