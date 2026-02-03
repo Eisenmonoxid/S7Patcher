@@ -36,12 +36,14 @@ namespace S7Patcher.Source
                 return false;
             }
 
-            if (Mapping.TryGetValue(GlobalID, out byte Value) == false)
+            if (!Mapping.TryGetValue(GlobalID, out byte Value))
             {
                 Parser.Dispose();
                 return false;
             }
 
+            Console.Read();
+            
             bool PatchError = PatchGame(Value);
             if (GlobalID == GameVariant.ORIGINAL)
             {
@@ -75,13 +77,13 @@ namespace S7Patcher.Source
         
         private bool WriteMapping(byte ID, string Block = "")
         {
-            if (Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> PatchMapping, Block) == false)
+            if (!Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> Mapping, Block))
             {
                 Console.WriteLine("[ERROR] Could not parse binary data! Aborting ...");
                 return false;
             }
 
-            foreach (var Entry in PatchMapping)
+            foreach (var Entry in Mapping)
             {
                 Helpers.Instance.WriteToFile(GlobalStream, Entry.Key, Entry.Value);
             }
@@ -94,7 +96,7 @@ namespace S7Patcher.Source
             string Folder = (GlobalID == GameVariant.ORIGINAL) ? "Settlers7" : "THE SETTLERS 7 - History Edition";
             string Filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Folder, Name);
 
-            if (File.Exists(Filepath) == false)
+            if (!File.Exists(Filepath))
             {
                 do
                 {
@@ -129,7 +131,8 @@ namespace S7Patcher.Source
         private bool UpdateProcessAffinity(byte ID)
         {
             Console.WriteLine("\n[INPUT] Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
-            int Input = Helpers.Instance.ConsoleReadWrapper();
+
+            int Input = Console.Read();
             if (Input != '0')
             {
                 Console.WriteLine("\n[INFO] Skipping Affinity ...");

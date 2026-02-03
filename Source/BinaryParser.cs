@@ -23,9 +23,7 @@ namespace S7Patcher.Source
             BlockOffset = (uint)(Magic.Length + sizeof(byte));
             GlobalReader = new BinaryReader(GetDecompressedStream(BinaryStream));
 
-            BinaryStream.Close();
             BinaryStream.Dispose();
-
             if (!IsValidBinaryFile())
             {
                 Dispose();
@@ -46,11 +44,7 @@ namespace S7Patcher.Source
             return DecompressedStream;
         }
 
-        public void Dispose()
-        {
-            GlobalReader?.Close();
-            GlobalReader?.Dispose();
-        }
+        public void Dispose() => GlobalReader?.Dispose();
 
         private bool IsValidBinaryFile()
         {

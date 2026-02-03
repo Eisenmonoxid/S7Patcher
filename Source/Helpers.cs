@@ -17,7 +17,7 @@ namespace S7Patcher.Source
         public bool CreateBackup(string FilePath)
         {
             string FullPath = Path.Combine(Path.GetDirectoryName(FilePath), Path.GetFileNameWithoutExtension(FilePath) + "_BACKUP.exe");
-            if (File.Exists(FullPath) == false)
+            if (!File.Exists(FullPath))
             {
                 try
                 {
@@ -62,12 +62,8 @@ namespace S7Patcher.Source
             return Stream;
         }
 
-        public void CloseFileStream(FileStream Stream)
-        {
-            Stream?.Close();
-            Stream?.Dispose();
-        }
-
+        public void CloseFileStream(FileStream Stream) => Stream?.Dispose();
+        
         public string GetFileHash(FileStream Stream)
         {
             using MD5 MD = MD5.Create();
@@ -123,7 +119,7 @@ namespace S7Patcher.Source
 
             if ((EndIndex - StartIndex) != 4)
             {
-                Lines.RemoveRange(StartIndex + 3, (EndIndex - StartIndex) - 4);
+                Lines.RemoveRange(StartIndex + 3, EndIndex - StartIndex - 4);
             }
 
             Lines[StartIndex + 2] = Resources.Branch;
@@ -209,7 +205,7 @@ namespace S7Patcher.Source
             }
 
             string Pattern = @"^[0-7](?:,[0-7])*$";
-            if (Regex.IsMatch(Value, Pattern) == false)
+            if (!Regex.IsMatch(Value, Pattern))
             {
                 Console.WriteLine("[ERROR] Erroneous input value. Please try again!");
                 return null;
@@ -248,17 +244,6 @@ namespace S7Patcher.Source
             {
                 Console.WriteLine(ex.ToString());
             }
-        }
-
-        public int ConsoleReadWrapper()
-        {
-            int Value = Console.Read();
-            if (Value == 13 || Value == 10) // CR LF
-            {
-                return ConsoleReadWrapper();
-            }
-
-            return Value;
         }
     }
 }
