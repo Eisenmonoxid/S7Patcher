@@ -34,11 +34,14 @@ namespace S7Patcher.Source
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine("\n[INFO] Download failed! Falling back to embedded file.");
+                Console.WriteLine("[INFO] Download failed! Falling back to embedded file.");
                 return null;
             }
+            finally
+            {
+                Watch.Stop();
+            }
 
-            Watch.Stop();
             Console.WriteLine($"[INFO] Download Finished. Downloaded {Memory.Length / (float)1024} KB in {Watch.Elapsed.TotalSeconds} seconds.");
             return Memory;
         }

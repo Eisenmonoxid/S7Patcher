@@ -16,6 +16,7 @@ namespace S7Patcher.Source
     internal class Program
     {
         private static GameVariant? Variant;
+        private static bool UseCheckSum = true;
         private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
 
         static void Main(string[] args)
@@ -25,11 +26,13 @@ namespace S7Patcher.Source
             Console.Title = "S7Patcher - github.com/Eisenmonoxid/S7Patcher";
             Console.Clear();
 
-            string Version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+            string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
             Console.WriteLine("[INFO] S7Patcher v" + Version + " currently running on " + RuntimeInformation.OSDescription.ToString());
 
             bool USE_DEBUG = args.Any(Element => Element.Contains("-debug"));
-            Console.WriteLine("[INFO] USE_DEBUG - Activated: " + USE_DEBUG.ToString() + "\n");
+            Console.WriteLine("[INFO] USE_DEBUG - Activated: " + USE_DEBUG.ToString());
+
+            UseCheckSum = !args.Any(Element => Element.Contains("-skipchecksum"));
 
             FileStream Stream = GetFileStream(args);
             if (Stream == null)
@@ -69,7 +72,19 @@ namespace S7Patcher.Source
 
         private static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug, Stream Definition)
         {
-            if (!new Patcher(Stream, Variant, Debug).PatchGameWrapper(Definition))
+            Patcher Main;
+            try
+            {
+                Main = new(Stream, Definition, Variant, Debug);
+            }
+            catch (Exception ex)
+            {
+                Helpers.Instance.CloseFileStream(Stream);
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+
+            if (!Main.PatchGameWrapper())
             {
                 Helpers.Instance.CloseFileStream(Stream);
                 Console.WriteLine("[ERROR] Patching did not finish successfully! Aborting ...");
@@ -80,9 +95,9 @@ namespace S7Patcher.Source
             long Size = Stream.Length;
             Helpers.Instance.CloseFileStream(Stream);
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !UseCheckSum)
             {
-                Console.WriteLine("[INFO] Non - Windows platform, skipping CheckSum calculation.");
+                Console.WriteLine("[INFO] Skipping CheckSum calculation.");
                 return true;
             }
 
@@ -99,14 +114,14 @@ namespace S7Patcher.Source
         {
             Console.WriteLine("\n[INPUT] Download latest Definition file from the GitHub repository (Yes) or use local embedded resource (No)?\n(0 = Yes/1 = No):");
 
-            int Input = Console.Read();
-            if (Input != '0')
+            string Input = Console.ReadLine();
+            if (Input != "0")
             {
-                Console.WriteLine("\n[INFO] Using embedded resource Definition file.");
+                Console.WriteLine("[INFO] Using embedded resource Definition file.");
                 return false;
             }
 
-            Console.WriteLine("\n[INFO] Downloading latest Definition file.");
+            Console.WriteLine("[INFO] Downloading latest Definition file.");
             return true;
         }
 
@@ -150,7 +165,7 @@ namespace S7Patcher.Source
             Variant = Helpers.Instance.GetExecutableVariant(Stream);
             if (Variant != null)
             {
-                Console.WriteLine("\n[INFO] Found Game Variant " + Variant.ToString() + ". \n[INFO] Going to patch file: " + Filepath);
+                Console.WriteLine("[INFO] Found Game Variant " + Variant.ToString() + ". \n[INFO] Going to patch file: " + Filepath);
                 return Stream;
             }
             else

@@ -172,7 +172,7 @@ namespace S7Patcher.Source
             // Max 0xFF -> 255
             // ^ The above is wrong, since in x86 assembly a push is SIGN-EXTEND, meaning 7F (127) is the max value. 
             int Cores = Environment.ProcessorCount;
-            Console.WriteLine("\n[INFO] Found " + Cores.ToString() + " processors!");
+            Console.WriteLine("[INFO] Found " + Cores.ToString() + " processors!");
             Console.WriteLine("[INPUT] Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
                 "Game should run on core 2 and 3 -> Input: 2,3)");
 
