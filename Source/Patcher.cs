@@ -40,14 +40,15 @@ namespace S7Patcher.Source
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, ex.Message);
                 throw;
             }
 
             if (!Mapping.TryGetValue(GlobalID, out byte Result))
             {
                 Parser.Dispose();
-                throw new Exception("[ERROR] Invalid Game Variant! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Invalid Game Variant! Aborting ...");
+                throw new Exception();
             }
 
             Identifier = Result;
@@ -72,7 +73,7 @@ namespace S7Patcher.Source
         {
             if (Parser.GetFileVersion() != Version)
             {
-                Console.WriteLine("[ERROR] Binary Data Version Mismatch! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Binary Data Version Mismatch! Aborting ...");
                 return false;
             }
 
@@ -89,7 +90,7 @@ namespace S7Patcher.Source
         {
             if (!Parser.ParseBinaryFileContent(ID, out Dictionary<UInt32, byte[]> Mapping, Block))
             {
-                Console.WriteLine("[ERROR] Could not parse binary data! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not parse binary data! Aborting ...");
                 return false;
             }
 
@@ -110,13 +111,14 @@ namespace S7Patcher.Source
             {
                 do
                 {
-                    Console.WriteLine("\n[ERROR] " + Filepath + " not found!\n[INPUT] Please input the path to " +
-                        "the " + Name + " file:\n(Input skip to skip file patching)");
+                    Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, Filepath + " not found!");
+                    Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Please input the path to the " + Name + " file:" +
+                        "\n(Input skip to skip file patching)");
                     Filepath = Console.ReadLine();
 
                     if (Filepath == "skip")
                     {
-                        Console.WriteLine("[INFO] Skipping file patching ...");
+                        Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Skipping file patching ...");
                         return;
                     }
                     else if (File.Exists(Filepath))
@@ -127,7 +129,7 @@ namespace S7Patcher.Source
                 while (true);
             }
 
-            Console.WriteLine("[INFO] Going to patch file: " + Filepath);
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath);
             if (Name == "Profiles.xml")
             {
                 Helpers.Instance.UpdateProfileXML(Filepath);
@@ -140,17 +142,17 @@ namespace S7Patcher.Source
 
         private bool UpdateProcessAffinity(byte ID)
         {
-            Console.WriteLine("\n[INPUT] Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
 
             string Input = Console.ReadLine();
             if (Input != "0")
             {
-                Console.WriteLine("[INFO] Skipping Affinity ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Skipping Affinity ...");
                 return true;
             }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
-            Console.WriteLine("[INFO] Going to patch Affinity with value: 0x" + $"{Mask:X}");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch Affinity with value: 0x" + $"{Mask:X}");
 
             if (WriteMapping(ID, "AFF"))
             {

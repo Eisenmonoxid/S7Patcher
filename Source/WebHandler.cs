@@ -34,7 +34,7 @@ namespace S7Patcher.Source
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine("[INFO] Download failed! Falling back to embedded file.");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Download failed! Falling back to embedded file.");
                 return null;
             }
             finally
@@ -42,7 +42,7 @@ namespace S7Patcher.Source
                 Watch.Stop();
             }
 
-            Console.WriteLine($"[INFO] Download Finished. Downloaded {Memory.Length / (float)1024} KB in {Watch.Elapsed.TotalSeconds} seconds.");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, $"Download Finished. Downloaded {Memory.Length / (float)1024} KB in {Watch.Elapsed.TotalSeconds} seconds.");
             return Memory;
         }
     }

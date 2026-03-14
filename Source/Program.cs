@@ -13,6 +13,14 @@ namespace S7Patcher.Source
         HE_UBI
     }
 
+    public enum ConsoleColorType
+    {
+        INFO,
+        ERROR,
+        SUCCESS,
+        INPUT
+    }
+
     internal class Program
     {
         private static GameVariant? Variant;
@@ -27,10 +35,10 @@ namespace S7Patcher.Source
             Console.Clear();
 
             string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-            Console.WriteLine("[INFO] S7Patcher v" + Version + " currently running on " + RuntimeInformation.OSDescription.ToString());
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "S7Patcher v" + Version + " currently running on " + RuntimeInformation.OSDescription.ToString());
 
             bool USE_DEBUG = args.Any(Element => Element.Contains("-debug"));
-            Console.WriteLine("[INFO] USE_DEBUG - Activated: " + USE_DEBUG.ToString());
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "USE_DEBUG - Activated: " + USE_DEBUG.ToString());
 
             UseCheckSum = !args.Any(Element => Element.Contains("-skipchecksum"));
 
@@ -45,9 +53,9 @@ namespace S7Patcher.Source
             bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, OpenDefinitionStream());
             // Main patching routine
 
-            Console.WriteLine("\n[INFO] Finished!" + (!Result ? " One or more errors occured." : " No errors occured."));
-            Console.WriteLine("[INFO] If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
-            Console.WriteLine("[INFO] Press any key to exit ...");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Finished!" + (!Result ? " One or more errors occured." : " No errors occured."));
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Press any key to exit ...");
 
             try {Console.ReadKey();} catch {} // Console.ReadKey can throw exceptions in some environments
             return;
@@ -55,20 +63,20 @@ namespace S7Patcher.Source
 
         private static Stream OpenDefinitionStream()
         {
+            string Name = "S7Patcher.Definitions.Definitions.bin";
             Stream Definition;
+
             if (AskForDefinitionFile())
             {
-                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? GetEmbeddedResourceDefinition();
+                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? Helpers.Instance.GetEmbeddedResourceDefinition(Name);
             }
             else
             {
-                Definition = GetEmbeddedResourceDefinition();
+                Definition = Helpers.Instance.GetEmbeddedResourceDefinition(Name);
             }
 
             return Definition;
         }
-
-        private static Stream GetEmbeddedResourceDefinition() => Assembly.GetExecutingAssembly().GetManifestResourceStream("S7Patcher.Definitions.Definitions.bin");
 
         private static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug, Stream Definition)
         {
@@ -77,17 +85,16 @@ namespace S7Patcher.Source
             {
                 Main = new(Stream, Definition, Variant, Debug);
             }
-            catch (Exception ex)
+            catch
             {
                 Helpers.Instance.CloseFileStream(Stream);
-                Console.WriteLine(ex.ToString());
                 return false;
             }
 
             if (!Main.PatchGameWrapper())
             {
                 Helpers.Instance.CloseFileStream(Stream);
-                Console.WriteLine("[ERROR] Patching did not finish successfully! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Patching did not finish successfully! Aborting ...");
                 return false;
             }
 
@@ -97,13 +104,13 @@ namespace S7Patcher.Source
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !UseCheckSum)
             {
-                Console.WriteLine("[INFO] Skipping CheckSum calculation.");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Skipping CheckSum calculation.");
                 return true;
             }
 
             if (!new CheckSumCalculator().WritePEHeaderFileCheckSum(Path, Size))
             {
-                Console.WriteLine("[ERROR] Could not update PE Header CheckSum!");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not update PE Header CheckSum!");
                 return false;
             }
 
@@ -112,16 +119,17 @@ namespace S7Patcher.Source
 
         private static bool AskForDefinitionFile()
         {
-            Console.WriteLine("\n[INPUT] Download latest Definition file from the GitHub repository (Yes) or use local embedded resource (No)?\n(0 = Yes/1 = No):");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, 
+                "Download latest Definition file from the GitHub repository (Yes) or use local embedded resource (No)?\n(0 = Yes/1 = No):");
 
             string Input = Console.ReadLine();
             if (Input != "0")
             {
-                Console.WriteLine("[INFO] Using embedded resource Definition file.");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Using embedded resource Definition file.");
                 return false;
             }
 
-            Console.WriteLine("[INFO] Downloading latest Definition file.");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Downloading latest Definition file.");
             return true;
         }
 
@@ -132,32 +140,32 @@ namespace S7Patcher.Source
 
             if (Filepath == default)
             {
-                Console.WriteLine("[INPUT] Please input the executable path that you want to patch:");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Please input the executable path that you want to patch:");
                 Filepath = Console.ReadLine();
             }
 
             if (!File.Exists(Filepath))
             {
-                Console.WriteLine("[ERROR] File does not exist! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "File does not exist! Aborting ...");
                 return null;
             }
 
             if (!Helpers.Instance.CreateBackup(Filepath))
             {
-                Console.WriteLine("[ERROR] Could not create backup of file! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not create backup of file! Aborting ...");
                 return null;
             }
 
             Stream = Helpers.Instance.OpenFileStream(Filepath);
             if (Stream == null)
             {
-                Console.WriteLine("[ERROR] Could not open FileStream! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not open FileStream! Aborting ...");
                 return null;
             }
 
             if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()))
             {
-                Console.WriteLine("[INFO] Launcher found! Redirecting Filepath!");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Launcher found! Redirecting Filepath!");
                 Helpers.Instance.CloseFileStream(Stream);
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
             }
@@ -165,12 +173,13 @@ namespace S7Patcher.Source
             Variant = Helpers.Instance.GetExecutableVariant(Stream);
             if (Variant != null)
             {
-                Console.WriteLine("[INFO] Found Game Variant " + Variant.ToString() + ". \n[INFO] Going to patch file: " + Filepath);
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Found Game Variant " + Variant.ToString() + ".");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath);
                 return Stream;
             }
             else
             {
-                Console.WriteLine("[ERROR] Executable was not valid! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Executable is not valid! Aborting ...");
                 Helpers.Instance.CloseFileStream(Stream);
                 return null;
             }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +14,16 @@ namespace S7Patcher.Source
     {
         private Helpers() {}
         public static Helpers Instance {get;} = new();
+
+        private readonly Dictionary<ConsoleColorType, string> OutputMapping = new()
+        {
+            {ConsoleColorType.INFO,     "[INFO]: "},
+            {ConsoleColorType.ERROR,    "[ERROR]: "},
+            {ConsoleColorType.SUCCESS,  "[SUCCESS]: "},
+            {ConsoleColorType.INPUT,    "[INPUT]: "}
+        };
+
+        public Stream GetEmbeddedResourceDefinition(string Name) => Assembly.GetExecutingAssembly().GetManifestResourceStream(Name);
 
         public bool CreateBackup(string FilePath)
         {
@@ -172,8 +183,8 @@ namespace S7Patcher.Source
             // Max 0xFF -> 255
             // ^ The above is wrong, since in x86 assembly a push is SIGN-EXTEND, meaning 7F (127) is the max value. 
             int Cores = Environment.ProcessorCount;
-            Console.WriteLine("[INFO] Found " + Cores.ToString() + " processors!");
-            Console.WriteLine("[INPUT] Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
+            WriteWrapper(ConsoleColorType.INFO, "Found " + Cores.ToString() + " processors!");
+            WriteWrapper(ConsoleColorType.INPUT, "Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
                 "Game should run on core 2 and 3 -> Input: 2,3)");
 
             do
@@ -190,7 +201,7 @@ namespace S7Patcher.Source
                     Mask |= (byte)(1 << Element);
                 }
 
-                Console.WriteLine("\n[INFO] Writing Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".");
+                WriteWrapper(ConsoleColorType.INFO, "Writing Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".");
                 return Mask;
             }
             while (true);
@@ -207,14 +218,14 @@ namespace S7Patcher.Source
             string Pattern = @"^[0-7](?:,[0-7])*$";
             if (!Regex.IsMatch(Value, Pattern))
             {
-                Console.WriteLine("[ERROR] Erroneous input value. Please try again!");
+                WriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!");
                 return null;
             }
 
             int[] Input = Value.Split(',').Length == 1 ? [int.Parse(Value)] : [.. Value.Split(',').Select(int.Parse)];
             if (Input.Length > 7)
             {
-                Console.WriteLine("[ERROR] Erroneous input value. Please try again!");
+                WriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!");
                 return null;
             }
 
@@ -244,6 +255,27 @@ namespace S7Patcher.Source
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+
+        public void WriteWrapper(ConsoleColorType Type, string Text)
+        {
+            Console.ForegroundColor = Type switch
+            {
+                ConsoleColorType.ERROR => ConsoleColor.Red,
+                ConsoleColorType.SUCCESS => ConsoleColor.Green,
+                ConsoleColorType.INFO => ConsoleColor.Yellow,
+                ConsoleColorType.INPUT => ConsoleColor.Cyan,
+                _ => ConsoleColor.White,
+            };
+
+            if (!OutputMapping.TryGetValue(Type, out string Value))
+            {
+                return;
+            }
+
+            Console.Write(Value);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(Text + "\n");
         }
     }
 }

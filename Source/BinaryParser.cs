@@ -17,7 +17,7 @@ namespace S7Patcher.Source
         {
             if (BinaryStream == null || BinaryStream.CanRead == false)
             {
-                throw new Exception("[ERROR] Invalid binary stream.");
+                throw new Exception("Invalid binary stream.");
             }
 
             BlockOffset = (uint)(Magic.Length + sizeof(byte));
@@ -27,7 +27,7 @@ namespace S7Patcher.Source
             if (!IsValidBinaryFile())
             {
                 Dispose();
-                throw new Exception("[ERROR] Invalid binary file.");
+                throw new Exception("Invalid binary file.");
             }
         }
 
