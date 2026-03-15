@@ -34,7 +34,7 @@ namespace S7Patcher.Source
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Download failed! Falling back to embedded file.\n");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Download failed! Falling back to embedded file.");
                 return null;
             }
             finally

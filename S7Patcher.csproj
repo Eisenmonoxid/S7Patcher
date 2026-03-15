@@ -30,6 +30,7 @@
 		<MetadataUpdaterSupport>False</MetadataUpdaterSupport>
 		<MetricsSupport>False</MetricsSupport>
 		<XmlResolverIsNetworkingEnabledByDefault>False</XmlResolverIsNetworkingEnabledByDefault>
+		<OptimizationPreference>Size</OptimizationPreference>
 	</PropertyGroup>
 
 	<PropertyGroup>

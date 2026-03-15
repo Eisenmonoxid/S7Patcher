@@ -121,16 +121,16 @@ namespace S7Patcher.Source
         private static bool AskForDefinitionFile()
         {
             Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, 
-                "Download latest Definition file from the GitHub repository (Yes) or use local embedded resource (No)?\n(0 = Yes/1 = No):");
+                "Download the latest Definition file from the GitHub repository (Yes) or use the local embedded resource (No)?\n(0 = Yes/1 = No):");
 
             string Input = Console.ReadLine();
             if (Input != "0")
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Using embedded resource Definition file.", true);
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Using embedded resource Definition file.");
                 return false;
             }
 
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Downloading latest Definition file.", true);
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Downloading latest Definition file.");
             return true;
         }
 
