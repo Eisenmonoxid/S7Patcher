@@ -17,10 +17,10 @@ namespace S7Patcher.Source
 
         private readonly Dictionary<ConsoleColorType, string> OutputMapping = new()
         {
-            {ConsoleColorType.INFO,     "[INFO]: "},
-            {ConsoleColorType.ERROR,    "[ERROR]: "},
-            {ConsoleColorType.SUCCESS,  "[SUCCESS]: "},
-            {ConsoleColorType.INPUT,    "[INPUT]: "}
+            {ConsoleColorType.INFO,     "[INFO] "},
+            {ConsoleColorType.ERROR,    "[ERROR] "},
+            {ConsoleColorType.SUCCESS,  "[SUCCESS] "},
+            {ConsoleColorType.INPUT,    "[INPUT] "}
         };
 
         public Stream GetEmbeddedResourceDefinition(string Name) => Assembly.GetExecutingAssembly().GetManifestResourceStream(Name);
@@ -183,7 +183,7 @@ namespace S7Patcher.Source
             // Max 0xFF -> 255
             // ^ The above is wrong, since in x86 assembly a push is SIGN-EXTEND, meaning 7F (127) is the max value. 
             int Cores = Environment.ProcessorCount;
-            WriteWrapper(ConsoleColorType.INFO, "Found " + Cores.ToString() + " processors!");
+            WriteWrapper(ConsoleColorType.INFO, "Found " + Cores.ToString() + " processors!", true);
             WriteWrapper(ConsoleColorType.INPUT, "Input the physical cores the game should run on (7 at max) separated by ','.\n(Example: " +
                 "Game should run on core 2 and 3 -> Input: 2,3)");
 
@@ -201,7 +201,7 @@ namespace S7Patcher.Source
                     Mask |= (byte)(1 << Element);
                 }
 
-                WriteWrapper(ConsoleColorType.INFO, "Writing Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".");
+                WriteWrapper(ConsoleColorType.INFO, "Writing Binary Mask " + Convert.ToString(Mask, 2).PadLeft(7, '0') + ".", true);
                 return Mask;
             }
             while (true);
@@ -218,14 +218,14 @@ namespace S7Patcher.Source
             string Pattern = @"^[0-7](?:,[0-7])*$";
             if (!Regex.IsMatch(Value, Pattern))
             {
-                WriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!");
+                WriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!", true);
                 return null;
             }
 
             int[] Input = Value.Split(',').Length == 1 ? [int.Parse(Value)] : [.. Value.Split(',').Select(int.Parse)];
             if (Input.Length > 7)
             {
-                WriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!");
+                WriteWrapper(ConsoleColorType.ERROR, "Erroneous input value. Please try again!", true);
                 return null;
             }
 
@@ -257,23 +257,23 @@ namespace S7Patcher.Source
             }
         }
 
-        public void WriteWrapper(ConsoleColorType Type, string Text)
+        public void WriteWrapper(ConsoleColorType Type, string Text, bool LineBreak = false)
         {
-            Console.ForegroundColor = Type switch
-            {
-                ConsoleColorType.ERROR => ConsoleColor.Red,
-                ConsoleColorType.SUCCESS => ConsoleColor.Green,
-                ConsoleColorType.INFO => ConsoleColor.Yellow,
-                ConsoleColorType.INPUT => ConsoleColor.Cyan,
-                _ => ConsoleColor.White,
-            };
-
             if (!OutputMapping.TryGetValue(Type, out string Value))
             {
                 return;
             }
 
-            Console.Write(Value);
+            Console.ForegroundColor = Type switch
+            {
+                ConsoleColorType.ERROR      => ConsoleColor.Red,
+                ConsoleColorType.SUCCESS    => ConsoleColor.Green,
+                ConsoleColorType.INFO       => ConsoleColor.Yellow,
+                ConsoleColorType.INPUT      => ConsoleColor.Cyan,
+                _                           => ConsoleColor.White,
+            };
+
+            Console.Write(LineBreak ? "\n" + Value : Value);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Text + "\n");
         }

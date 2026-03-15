@@ -28,7 +28,7 @@ namespace S7Patcher.Source
                 return null;
             }
 
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.SUCCESS, "Calculated new CheckSum: 0x" + $"{CheckSum.ToString():X}");
             return CheckSum;
         }
 

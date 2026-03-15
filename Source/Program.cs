@@ -26,6 +26,7 @@ namespace S7Patcher.Source
         private static GameVariant? Variant;
         private static bool UseCheckSum = true;
         private const string LauncherHash = "348783a3d9b93bb424b7054429cd4844";
+        private const string Definitions = "S7Patcher.Definitions.Definitions.bin";
 
         static void Main(string[] args)
         {
@@ -38,7 +39,7 @@ namespace S7Patcher.Source
             Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "S7Patcher v" + Version + " currently running on " + RuntimeInformation.OSDescription.ToString());
 
             bool USE_DEBUG = args.Any(Element => Element.Contains("-debug"));
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "USE_DEBUG - Activated: " + USE_DEBUG.ToString());
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "USE_DEBUG - Activated: " + USE_DEBUG.ToString() + "\n");
 
             UseCheckSum = !args.Any(Element => Element.Contains("-skipchecksum"));
 
@@ -50,10 +51,11 @@ namespace S7Patcher.Source
             }
 
             // Main patching routine
-            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, OpenDefinitionStream());
+            Stream DefinitionStream = OpenDefinitionStream(Definitions);
+            bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, DefinitionStream);
             // Main patching routine
 
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Finished!" + (!Result ? " One or more errors occured." : " No errors occured."));
+            Helpers.Instance.WriteWrapper(ConsoleColorType.SUCCESS, "Finished!" + (!Result ? " One or more errors occured." : " No errors occured."), true);
             Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "If you encounter any errors (or you want to give a thumbs up), please report on GitHub or Discord.");
             Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Press any key to exit ...");
 
@@ -61,9 +63,8 @@ namespace S7Patcher.Source
             return;
         }
 
-        private static Stream OpenDefinitionStream()
+        private static Stream OpenDefinitionStream(string Name)
         {
-            string Name = "S7Patcher.Definitions.Definitions.bin";
             Stream Definition;
 
             if (AskForDefinitionFile())
@@ -125,11 +126,11 @@ namespace S7Patcher.Source
             string Input = Console.ReadLine();
             if (Input != "0")
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Using embedded resource Definition file.");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Using embedded resource Definition file.", true);
                 return false;
             }
 
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Downloading latest Definition file.");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Downloading latest Definition file.", true);
             return true;
         }
 
@@ -140,32 +141,32 @@ namespace S7Patcher.Source
 
             if (Filepath == default)
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Please input the executable path that you want to patch:");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Input the executable path that you want to patch (ends with .exe):");
                 Filepath = Console.ReadLine();
             }
 
             if (!File.Exists(Filepath))
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "File does not exist! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "File does not exist! Aborting ...", true);
                 return null;
             }
 
             if (!Helpers.Instance.CreateBackup(Filepath))
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not create backup of file! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not create backup of file! Aborting ...", true);
                 return null;
             }
 
             Stream = Helpers.Instance.OpenFileStream(Filepath);
             if (Stream == null)
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not open FileStream! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Could not open FileStream! Aborting ...", true);
                 return null;
             }
 
             if (Helpers.Instance.GetFileHash(Stream).Equals(LauncherHash.ToLower()))
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Launcher found! Redirecting Filepath!");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Launcher found! Redirecting Filepath!", true);
                 Helpers.Instance.CloseFileStream(Stream);
                 return GetFileStream([Helpers.Instance.RedirectLauncherFilePath(Filepath)]);
             }
@@ -173,13 +174,13 @@ namespace S7Patcher.Source
             Variant = Helpers.Instance.GetExecutableVariant(Stream);
             if (Variant != null)
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Found Game Variant " + Variant.ToString() + ".");
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath);
+                Helpers.Instance.WriteWrapper(ConsoleColorType.SUCCESS, "Found Game Variant " + Variant.ToString() + ".", true);
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath + "\n");
                 return Stream;
             }
             else
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Executable is not valid! Aborting ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, "Executable is not valid! Aborting ...", true);
                 Helpers.Instance.CloseFileStream(Stream);
                 return null;
             }

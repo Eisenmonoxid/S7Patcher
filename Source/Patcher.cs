@@ -111,7 +111,7 @@ namespace S7Patcher.Source
             {
                 do
                 {
-                    Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, Filepath + " not found!");
+                    Helpers.Instance.WriteWrapper(ConsoleColorType.ERROR, Filepath + " not found!", true);
                     Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Please input the path to the " + Name + " file:" +
                         "\n(Input skip to skip file patching)");
                     Filepath = Console.ReadLine();
@@ -129,7 +129,7 @@ namespace S7Patcher.Source
                 while (true);
             }
 
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath);
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch file: " + Filepath + "\n");
             if (Name == "Profiles.xml")
             {
                 Helpers.Instance.UpdateProfileXML(Filepath);
@@ -142,17 +142,17 @@ namespace S7Patcher.Source
 
         private bool UpdateProcessAffinity(byte ID)
         {
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, "Update Process Affinity? (Enables higher framerate and smoother performance)\n(0 = Yes/1 = No):", true);
 
             string Input = Console.ReadLine();
             if (Input != "0")
             {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Skipping Affinity ...");
+                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Skipping Affinity ...\n");
                 return true;
             }
 
             byte Mask = Helpers.Instance.GetAffinityMaskByte();
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch Affinity with value: 0x" + $"{Mask:X}");
+            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Going to patch Affinity with value: 0x" + $"{Mask:X}\n");
 
             if (WriteMapping(ID, "AFF"))
             {
