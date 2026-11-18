@@ -51,7 +51,7 @@ namespace S7Patcher.Source
             }
 
             // Main patching routine
-            Stream DefinitionStream = OpenDefinitionStream(Definitions);
+            Stream DefinitionStream = Helpers.Instance.GetEmbeddedResourceDefinition(Definitions);
             bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, DefinitionStream);
             // Main patching routine
 
@@ -61,22 +61,6 @@ namespace S7Patcher.Source
 
             try {Console.ReadKey();} catch {} // Console.ReadKey can throw exceptions in some environments
             return;
-        }
-
-        private static Stream OpenDefinitionStream(string Name)
-        {
-            Stream Definition;
-
-            if (AskForDefinitionFile())
-            {
-                Definition = WebHandler.Instance.DownloadDefinitionFile().GetAwaiter().GetResult() ?? Helpers.Instance.GetEmbeddedResourceDefinition(Name);
-            }
-            else
-            {
-                Definition = Helpers.Instance.GetEmbeddedResourceDefinition(Name);
-            }
-
-            return Definition;
         }
 
         private static bool HandlePatchingProcess(FileStream Stream, GameVariant Variant, bool Debug, Stream Definition)
@@ -117,23 +101,7 @@ namespace S7Patcher.Source
 
             return true;
         }
-
-        private static bool AskForDefinitionFile()
-        {
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INPUT, 
-                "Download the latest Definition file from the GitHub repository (Yes) or use the local embedded resource (No)?\n(0 = Yes/1 = No):");
-
-            string Input = Console.ReadLine();
-            if (Input != "0")
-            {
-                Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Using embedded resource Definition file.");
-                return false;
-            }
-
-            Helpers.Instance.WriteWrapper(ConsoleColorType.INFO, "Downloading latest Definition file.");
-            return true;
-        }
-
+        
         private static FileStream GetFileStream(string[] args)
         {
             FileStream Stream;

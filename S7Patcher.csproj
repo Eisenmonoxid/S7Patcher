@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+		<TargetFramework>net11.0</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<GenerateAssemblyInfo>True</GenerateAssemblyInfo>
 	</PropertyGroup>
@@ -40,12 +40,12 @@
 	<PropertyGroup>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-		<AssemblyVersion>1.9.2.0</AssemblyVersion>
-		<FileVersion>1.9.2.0</FileVersion>
+		<AssemblyVersion>1.9.3.0</AssemblyVersion>
+		<FileVersion>1.9.3.0</FileVersion>
 		<NuGetAudit>False</NuGetAudit>
 		<Copyright>Eisenmonoxid</Copyright>
 		<Authors>Eisenmonoxid</Authors>
-		<Version>1.9.2</Version>
+		<Version>1.9.3</Version>
 		<Company>Eisenmonoxid</Company>
   	</PropertyGroup>
 
