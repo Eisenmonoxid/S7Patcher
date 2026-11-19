@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace S7Patcher.Source
+﻿namespace S7Patcher.Source
 {
     internal class Patcher
     {

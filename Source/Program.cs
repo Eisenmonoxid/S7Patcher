@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-namespace S7Patcher.Source
+﻿namespace S7Patcher.Source
 {
     public enum GameVariant
     {
@@ -51,7 +45,7 @@ namespace S7Patcher.Source
             }
 
             // Main patching routine
-            Stream DefinitionStream = Helpers.Instance.GetEmbeddedResourceDefinition(Definitions);
+            Stream DefinitionStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Definitions);
             bool Result = HandlePatchingProcess(Stream, (GameVariant)Variant, USE_DEBUG, DefinitionStream);
             // Main patching routine
 

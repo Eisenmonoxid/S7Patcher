@@ -1,12 +1,4 @@
 ﻿using S7Patcher.Properties;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace S7Patcher.Source
 {
@@ -22,9 +14,7 @@ namespace S7Patcher.Source
             {ConsoleColorType.SUCCESS,  "[SUCCESS] "},
             {ConsoleColorType.INPUT,    "[INPUT] "}
         };
-
-        public Stream GetEmbeddedResourceDefinition(string Name) => Assembly.GetExecutingAssembly().GetManifestResourceStream(Name);
-
+        
         public bool CreateBackup(string FilePath)
         {
             string FullPath = Path.Combine(Path.GetDirectoryName(FilePath), Path.GetFileNameWithoutExtension(FilePath) + "_BACKUP.exe");
