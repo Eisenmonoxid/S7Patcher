@@ -1,4 +1,10 @@
-﻿namespace S7Patcher.Source
+﻿using System;
+using System.IO;
+using System.IO.MemoryMappedFiles;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+
+namespace S7Patcher.Source
 {
     internal class CheckSumCalculator
     {

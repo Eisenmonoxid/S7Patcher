@@ -1,4 +1,10 @@
-﻿namespace S7Patcher.Source
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+
+namespace S7Patcher.Source
 {
     internal class BinaryParser
     {
